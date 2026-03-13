@@ -1,0 +1,682 @@
+/* ===== ROOT COLORS ===== */
+:root {
+  --frost-blue: #ADCDE9;
+  --deep-forest-green: #22443E;
+  --snow-white: #FAFAFA;
+  --gold-accent: #D4AF37;
+  --dark-navy: #1A2A44;
+}
+
+/* ===== RESET & BASE ===== */
+* {
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Mobile container adjustments */
+@media (max-width: 576px) {
+  .container {
+    padding: 0 15px;
+  }
+}
+
+img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+}
+
+/* ===== NAVBAR ===== */
+.navbar, .bg-primary {
+  background: var(--dark-navy) !important;
+  padding: 1rem 0;
+  position: sticky; 
+  top: 0; 
+  z-index: 1030;
+}
+
+.navbar .container, .bg-primary .container {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.logo, a.text-white {
+  font-size: 2rem; 
+  color: var(--gold-accent) !important;
+  text-decoration: none !important;
+}
+
+/* Mobile logo */
+@media (max-width: 768px) {
+  .logo, a.text-white {
+    font-size: 1.5rem;
+  }
+}
+
+nav a, .navbar a, .bg-primary a {
+  color: white; 
+  margin: 0 1rem; 
+  text-decoration: none; 
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+nav a:hover, nav a.active, 
+.navbar a:hover, .navbar a.active {
+  color: var(--gold-accent) !important;
+  border-bottom: 2px solid var(--gold-accent);
+}
+
+.search, .bi { 
+  font-size: 1.3rem; 
+  cursor: pointer; 
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+  display: flex;
+  background: transparent;
+  border: none;
+  color: var(--gold-accent);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+/* Hide mobile menu button on desktop */
+@media (min-width: 992px) {
+  .mobile-menu-btn {
+    display: none !important;
+  }
+  
+  nav {
+    display: flex !important;
+  }
+}
+
+
+/* Map styling */
+#map {
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile map adjustments */
+@media (max-width: 768px) {
+  #map {
+    height: 250px !important;
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  #map {
+    height: 200px !important;
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+}
+
+.hero p {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: var(--frost-blue);
+}
+
+.cta-btn {
+  background: var(--gold-accent);
+  color: var(--dark-navy);
+  border: none;
+  padding: 1rem 2rem;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cta-btn:hover {
+  background: white;
+  color: var(--dark-navy);
+}
+
+/* ===== CARDS ===== */
+.cards, .project-card, .card {
+  display: flex;
+  gap: 2rem;
+  margin: 1rem auto;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card, .project-card {
+  width: 300px;
+  background: var(--dark-navy);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+  color: white;
+}
+
+.card:hover, .project-card:hover {
+  transform: translateY(-10px);
+}
+
+.card img, .card-img-top {
+  height: 200px;
+  border-radius: 16px 16px 16px 16px; /* Rounded top corners only */
+}
+
+.card h3, .card h5, .card-title {
+  color: white;
+  text-align: center;
+  padding: 0.5rem 0 0.5rem;
+  font-size: 1.4rem;
+}
+
+/* Mobile card titles */
+@media (max-width: 576px) {
+  .card h3, .card h5, .card-title {
+    font-size: 1.2rem;
+    padding: 0.4rem 0 0.4rem;
+  }
+}
+
+
+
+
+/* ===== BUTTON STYLES ===== */
+.btn-outline-light {
+  color: white;
+  border-color: var(--gold-accent);
+}
+
+.btn-outline-light:hover {
+  background-color: var(--gold-accent);
+  color: var(--dark-navy);
+  border-color: var(--gold-accent);
+}
+
+.btn-light {
+  background-color: var(--gold-accent);
+  color: var(--dark-navy);
+  border-color: var(--gold-accent);
+}
+
+.btn-light:hover {
+  background-color: white;
+  color: var(--dark-navy);
+  border-color: white;
+}
+
+/* ===== FLASH MESSAGES ===== */
+.alert {
+  margin-bottom: 1rem;
+}
+
+/* Mobile flash messages */
+@media (max-width: 576px) {
+  .alert {
+    margin-bottom: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ===== MAIN CONTENT ===== */
+main.container {
+  margin-bottom: 2rem;
+}
+
+/* Mobile main content */
+@media (max-width: 576px) {
+  main.container {
+    margin-bottom: 1rem;
+  }
+}
+
+/* ===== USER MENU ===== */
+.dropdown-menu {
+  background: var(--dark-navy);
+  border: 1px solid var(--gold-accent);
+}
+
+.dropdown-item {
+  color: white;
+}
+
+.dropdown-item:hover {
+  background: var(--gold-accent);
+  color: var(--dark-navy);
+}
+
+/* Mobile user menu */
+@media (max-width: 768px) {
+  .dropdown-toggle {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .dropdown-menu {
+    min-width: 200px;
+  }
+}
+
+/* ===== FILTERS ===== */
+.form-check-label {
+  color: var(--dark-navy);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 991px) {
+  /* Navbar mobile */
+  .navbar .container {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem 0;
+    width: 100vw;
+  }
+
+  /* Mobile header top row */
+  .mobile-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  nav {
+    display: none;
+  }
+
+  nav.mobile-menu-open {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: var(--dark-navy);
+    padding: 1rem 0;
+  }
+
+  nav a {
+    margin: 0.5rem 0;
+    padding: 0.5rem 1rem;
+  }
+
+  nav.mobile-menu-open .mobile-menu-btn {
+    display: none;
+  }
+
+  /* Hero mobile */
+  .hero {
+    height: 50vh;
+    align-items: flex-end;
+    padding-bottom: 2rem;
+    text-align: center;
+  }
+
+ 
+
+  .cta-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  /* Cards mobile */
+  #projectsContainer {
+    flex-wrap: wrap !important;
+    justify-content: center;
+    gap: 16px !important;
+  }
+
+  .project-card, .card {
+    width: 100% !important;
+    max-width: 300px !important;
+    flex: 0 0 auto !important;
+  }
+
+  /* Filters mobile */
+  .offcanvas {
+    width: 100% !important;
+  }
+
+  .form-check-label {
+    font-size: 0.95rem;
+  }
+
+  h6 {
+    font-size: 1rem;
+  }
+
+  /* Buttons mobile */
+  .btn-outline-light {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  
+  /* Search input mobile */
+  input.form-control {
+    font-size: 16px; /* Prevents zoom on iOS */
+    width: 150px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero {
+    height: 40vh;
+  }
+
+  .card, .project-card {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .card img, .card-img-top {
+    height: 250px;
+    object-fit: cover;
+    border-radius: 16px 16px 0 0;
+  }
+
+  nav a {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    display: block;
+    text-align: center;
+    border-radius: 4px;
+  }
+
+  .btn-outline-light {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  footer {
+    font-size: 0.85rem;
+    padding: 1.5rem 0;
+  }
+}
+
+/* ===== TOUCH DEVICE OPTIMIZATIONS ===== */
+@media (hover: none) and (pointer: coarse) {
+  /* Touch devices - remove hover effects that don't work */
+  .card:hover, .project-card:hover {
+    transform: none;
+  }
+
+  /* Make touch targets bigger */
+  button, a, .clickable-card {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Larger touch targets for form elements */
+  input, select, textarea {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  /* Filter checkboxes need larger touch targets */
+  .form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-top: 0.1rem;
+  }
+
+  .form-check-label {
+    padding-left: 0.5rem;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.fb-like-active {
+    color: #1877f2 !important;
+}
+
+.fb-emoji {
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 4px;
+}
+
+.fb-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fb-comment {
+        margin-bottom: 12px;
+    }
+    
+    .fb-comment-avatar {
+        width: 28px;
+        height: 28px;
+        margin-right: 6px;
+    }
+    
+    .fb-compose-input {
+        font-size: 14px;
+    }
+    
+    .fb-comment-media img {
+        max-width: 200px;
+    }
+}
+
+/* Animation for new comments */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fb-new-comment {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Category Filter Styles */
+.filter-checkbox {
+    margin-right: 8px;
+}
+
+/* Mobile responsive styles for category filters */
+@media (max-width: 576px) {
+    .form-check {
+        margin-bottom: 8px;
+    }
+    
+    .form-check-label {
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    h6 {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+        padding-bottom: 5px;
+    }
+    
+    .row.mb-4 {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        margin-bottom: 20px !important;
+    }
+    
+    .col-6 {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    .form-check-label {
+        font-size: 0.95rem;
+    }
+    
+    .row.mb-4 {
+        background-color: #f8f9fa;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+    }
+}
+
+/* Sidepanel Styles */
+.offcanvas {
+    width: 300px !important;
+}
+
+.offcanvas-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.offcanvas-title {
+    color: #495057;
+    font-weight: 600;
+}
+
+.filter-section {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* Mobile responsiveness for sidepanel */
+@media (max-width: 576px) {
+    .offcanvas {
+        width: 280px !important;
+    }
+    
+    .offcanvas-body {
+        padding: 1rem;
+    }
+    
+    .form-check {
+        margin-bottom: 10px;
+    }
+    
+    .form-check-input {
+        margin-top: 0.25rem;
+    }
+
+    /* Make filter button smaller on very small screens */
+    .btn-outline-light {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Project Description Styling */
+.project-description {
+    white-space: pre-line;
+    word-wrap: break-word;
+    line-height: 1.6;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.project-description p {
+    margin-bottom: 1rem;
+}
+
+/* Remove excessive line breaks in description */
+.project-description br + br {
+    display: none;
+}
+
+/* Clickable Project Cards */
+.clickable-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clickable-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.clickable-card:hover .card {
+    border-color: #0d6efd;
+}
+
+.clickable-card:active {
+    transform: translateY(-2px);
+}
+
+/* Make sure images in clickable cards are not selectable */
+.clickable-card img {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Center project card titles */
+.card-title {
+    text-align: center;
+}
+
+/* Reduce spacing in project cards */
+.card .card-body {
+    padding: 0.5rem 1rem;  /* Reduced from Bootstrap's default 1rem */
+}
+.project-title {
+  color: var(--dark-navy);  /* მუქი ფერი ღია ფონზე */
+  font-size: 2rem;  /* გამსხვილებული ზომა */
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Mobile version of project title */
+@media (max-width: 767px) {
+  .project-title {
+    font-size: 1.8rem;  /* Smaller on mobile */
+    margin-bottom: 1.5rem;
+  }
+}

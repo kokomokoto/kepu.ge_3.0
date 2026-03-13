@@ -1,0 +1,437 @@
+{% extends 'base.html' %}
+{% block title %}Georgian Heritage Projects - DEBUG VERSION{% endblock %}
+
+{% block head %}
+<style>
+    .viewer-wrap{margin-bottom:20px;}
+    .viewer-iframe {
+        width: 100%;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    @media (min-width: 768px) {
+        .viewer-iframe {
+            height: 60vh;
+            min-height: 400px;
+            max-height: 600px;
+        }
+    }
+    @media (max-width: 767px) {
+        .viewer-iframe {
+            height: 50vh;
+            min-height: 300px;
+            max-height: 400px;
+        }
+    }
+    @media (min-width: 1200px) {
+        .viewer-iframe {
+            height: 65vh;
+            max-height: 700px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block filter_button %}
+<a href="#" class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidepanel" aria-controls="filterSidepanel">
+    <i class="bi bi-funnel" style="font-size: 1rem;"></i> FILTERS
+</a>
+{% endblock %}
+
+{% block filters %}
+<!-- Category Filters moved to sidepanel -->
+<div class="mb-4">
+    <h6 class="fw-bold mb-3">ტიპი</h6>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="ეკლესია" id="filter_church" data-type="type">
+                <label class="form-check-label" for="filter_church">ეკლესია</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="ციხე" id="filter_fortress" data-type="type">
+                <label class="form-check-label" for="filter_fortress">ციხე</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="მუზეუმი" id="filter_museum" data-type="type">
+                <label class="form-check-label" for="filter_museum">მუზეუმი</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="ძეგლი" id="filter_monument" data-type="type">
+                <label class="form-check-label" for="filter_monument">ძეგლი</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-4">
+    <h6 class="fw-bold mb-3">პერიოდი</h6>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="ქრისტეშობამდე" id="filter_bc" data-type="period">
+                <label class="form-check-label" for="filter_bc">ქრისტეშობამდე</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="I-X საუკუნე" id="filter_1_10" data-type="period">
+                <label class="form-check-label" for="filter_1_10">I-X საუკუნე</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="XI-XVII საუკუნე" id="filter_11_17" data-type="period">
+                <label class="form-check-label" for="filter_11_17">XI-XVII საუკუნე</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="1801-1918 წელი" id="filter_1801_1918" data-type="period">
+                <label class="form-check-label" for="filter_1801_1918">1801-1918</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="1918-21 წელი" id="filter_1918_21" data-type="period">
+                <label class="form-check-label" for="filter_1918_21">1918-21</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="1922-53 წელი" id="filter_1922_53" data-type="period">
+                <label class="form-check-label" for="filter_1922_53">1922-53</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="1954-91 წელი" id="filter_1954_91" data-type="period">
+                <label class="form-check-label" for="filter_1954_91">1954-91</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="1991 + წელი" id="filter_1991_plus" data-type="period">
+                <label class="form-check-label" for="filter_1991_plus">1991+</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-grid gap-2">
+    <button type="button" class="btn btn-outline-secondary btn-sm" id="clearFilters">
+        ყველა ფილტრის გასუფთავება
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+    <!-- Home 3D Viewer (global setting from admin panel) -->
+    {% if home_3d_viewer %}
+    <div class="container mb-4" style="margin-top: 30px;">
+        <div class="viewer-wrap">
+            {% if home_3d_viewer.startswith('<') %}
+                {{ home_3d_viewer|safe }}
+            {% else %}
+                <iframe src="{{ home_3d_viewer }}" class="viewer-iframe"
+                        allowfullscreen webkitallowfullscreen mozallowfullscreen
+                        allow="xr-spatial-tracking; gyroscope; accelerometer">
+                </iframe>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Projects Map -->
+    <div class="container mb-4">
+        <div id="map" style="height: 350px; width: 100%; border-radius: 10px; margin-bottom: 20px;"></div>
+    </div>
+    
+    <div id="projectsData" style="display:none;">{{ projects|tojson|safe }}</div>
+    
+    <div style="overflow:visible;">
+        <div id="projectsContainer" style="display:flex; flex-wrap:wrap; gap:24px;">
+        {% for project in projects %}
+        <div class="project-card clickable-card" style="min-width:320px; max-width:340px; flex:0 0 320px; cursor: pointer;" 
+             data-type-categories="{{ project.type_categories|join(',') if project.type_categories else '' }}"
+             data-period-categories="{{ project.period_categories|join(',') if project.period_categories else '' }}"
+             data-href="/project/{{ project.id }}">
+            <div class="card h-100">
+                {% if project.main_image %}
+                <img src="{{ project.main_image }}" class="card-img-top" alt="{{ project.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+    {% block scripts %}
+    <script>
+    // Set search input value from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('q');
+    if (searchQuery) {
+        document.getElementById('searchInput').value = searchQuery;
+    }
+    
+    let allProjects = document.querySelectorAll('.project-card');
+    
+    // Add click event listeners to project cards for proper middle-click support
+    allProjects.forEach(card => {
+        // Left click - navigate in same tab
+        card.addEventListener('click', function(e) {
+            const href = this.getAttribute('data-href');
+            if (href) {
+                window.location.href = href;
+            }
+        });
+        
+        // Middle click - open in new tab
+        card.addEventListener('auxclick', function(e) {
+            if (e.button === 1) { // Middle click
+                e.preventDefault();
+                const href = this.getAttribute('data-href');
+                if (href) {
+                    window.open(href, '_blank');
+                }
+            }
+        });
+    });
+    
+    // Category filters
+    document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', applyFilters);
+    });
+    
+    // Clear filters functionality
+    document.getElementById('clearFilters').addEventListener('click', function() {
+        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        applyFilters();
+    });
+    
+    function applyFilters() {
+        const selectedTypes = Array.from(document.querySelectorAll('.filter-checkbox[data-type="type"]:checked')).map(cb => cb.value);
+        const selectedPeriods = Array.from(document.querySelectorAll('.filter-checkbox[data-type="period"]:checked')).map(cb => cb.value);
+        
+        allProjects.forEach(project => {
+            const projectTypes = project.getAttribute('data-type-categories').split(',').filter(t => t);
+            const projectPeriods = project.getAttribute('data-period-categories').split(',').filter(p => p);
+            
+            let showProject = true;
+            
+            // If any type filters are selected, project must have at least one matching type
+            if (selectedTypes.length > 0) {
+                showProject = showProject && selectedTypes.some(type => projectTypes.includes(type));
+            }
+            
+            // If any period filters are selected, project must have at least one matching period
+            if (selectedPeriods.length > 0) {
+                showProject = showProject && selectedPeriods.some(period => projectPeriods.includes(period));
+            }
+            
+            project.style.display = showProject ? 'block' : 'none';
+        });
+    }
+
+    // Initialize map when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeMap();
+    });
+    </script>
+
+    <script>
+    function initializeMap() {
+        try {
+            console.log('Initializing map...');
+            
+            // Check if map div exists
+            var mapDiv = document.getElementById('map');
+            if (!mapDiv) {
+                console.error('Map div not found');
+                return;
+            }
+            
+            // Initialize map centered on Georgia
+            var map = L.map('map').setView([42.0, 43.5], 7);
+            console.log('Map created');
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            console.log('Tiles added');
+
+            // Get projects data from hidden div
+            var projectsData = document.getElementById('projectsData');
+            if (!projectsData) {
+                console.error('projectsData div not found');
+                return;
+            }
+            
+            console.log('Raw projects data:', projectsData.textContent.substring(0, 200) + '...');
+            
+            var projects = JSON.parse(projectsData.textContent);
+            console.log('Projects parsed:', projects.length);
+
+            // Add markers for each project with coordinates
+            var markers = [];
+            projects.forEach(function(project, index) {
+                console.log('Processing project', index, project.title, project.latitude, project.longitude);
+                
+                if (project.latitude && project.longitude) {
+                    var lat = parseFloat(project.latitude);
+                    var lng = parseFloat(project.longitude);
+                    
+                    console.log('Parsed coordinates:', lat, lng);
+                    
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        var marker = L.marker([lat, lng]).addTo(map);
+                        
+                        // Create popup content
+                        var popupContent = '<div style="max-width: 200px;">' +
+                            '<h6>' + project.title + '</h6>' +
+                            '<a href="/project/' + project.id + '" class="btn btn-sm btn-primary">იხილეთ დეტალები</a>' +
+                            '</div>';
+                        
+                        marker.bindPopup(popupContent);
+                        markers.push([lat, lng]);
+                        console.log('Marker added for', project.title);
+                    } else {
+                        console.warn('Invalid coordinates for', project.title, project.latitude, project.longitude);
+                    }
+                } else {
+                    console.log('No coordinates for', project.title);
+                }
+            });
+
+            console.log('Total markers added:', markers.length);
+            
+            // Fit map to show all markers
+            if (markers.length > 0) {
+                map.fitBounds(markers);
+                console.log('Map fitted to bounds');
+            } else {
+                console.warn('No markers to fit');
+            }
+        } catch (error) {
+            console.error('Map initialization error:', error);
+        }
+    }
+    </script>
+    {% endblock %}
+
+    <!-- About Section -->
+    <section id="about" class="py-5" style="background: linear-gradient(135deg, var(--deep-forest-green) 0%, var(--dark-navy) 100%); color: white; scroll-margin-top: 80px;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="mb-4" style="color: var(--gold-accent); font-weight: 600;">საქართველოს კულტურული მემკვიდრეობის შესახებ</h2>
+                    <p class="mb-3" style="font-size: 1.1rem; line-height: 1.6;">
+                        საქართველო წარმოადგენს უნიკალურ კულტურული მემკვიდრეობის ცენტრს, სადაც ათასწლეულების განმავლობაში შექმნილია 
+                        უნიკალური ძეგლები, ეკლესიები, ციხეები და კულტურული ობიექტები.
+                    </p>
+                    <p class="mb-3" style="font-size: 1.1rem; line-height: 1.6;">
+                        ჩვენი პორტფოლიო აერთიანებს საქართველოს კულტურული მემკვიდრეობის ყველაზე მნიშვნელოვან ძეგლებს 
+                        და პროექტებს, რომლებიც მოიცავს სხვადასხვა ეპოქებს ქრისტეშობამდე მე-21 საუკუნემდე.
+                    </p>
+                    <p class="mb-4" style="font-size: 1.1rem; line-height: 1.6;">
+                        აქ თქვენ შეძლებთ გაეცნოთ საქართველოს ისტორიულ და კულტურულ მემკვიდრეობას, 
+                        იხილოთ უნიკალური ძეგლები და გაეცნოთ მათ ისტორიას.
+                    </p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="text-center p-3" style="background: rgba(255,255,255,0.1); border-radius: 10px;">
+                                <h3 style="color: var(--gold-accent); font-size: 2rem; margin-bottom: 0.5rem;">3000+</h3>
+                                <p style="margin: 0; font-size: 0.9rem;">წლოვანება</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-3" style="background: rgba(255,255,255,0.1); border-radius: 10px;">
+                                <h3 style="color: var(--gold-accent); font-size: 2rem; margin-bottom: 0.5rem;">200+</h3>
+                                <p style="margin: 0; font-size: 0.9rem;">ძეგლი</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-3" style="background: rgba(255,255,255,0.1); border-radius: 10px;">
+                                <h3 style="color: var(--gold-accent); font-size: 2rem; margin-bottom: 0.5rem;">15</h3>
+                                <p style="margin: 0; font-size: 0.9rem;">ეპოქა</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-3" style="background: rgba(255,255,255,0.1); border-radius: 10px;">
+                                <h3 style="color: var(--gold-accent); font-size: 2rem; margin-bottom: 0.5rem;">∞</h3>
+                                <p style="margin: 0; font-size: 0.9rem;">ისტორია</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5" style="background: var(--snow-white); scroll-margin-top: 80px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h2 class="mb-4" style="color: var(--dark-navy); font-weight: 600;">კონტაქტი</h2>
+                    <p class="mb-4" style="font-size: 1.1rem; color: var(--dark-navy);">
+                        თუ გაქვთ შეკითხვები, წინადადებები ან გსურთ თანამშრომლობა, 
+                        გთხოვთ დაგვიკავშირდეთ ქვემოთ მოცემული საშუალებებით.
+                    </p>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="p-4" style="background: var(--frost-blue); border-radius: 15px; height: 100%;">
+                                <i class="bi bi-envelope-fill" style="font-size: 2rem; color: var(--dark-navy); margin-bottom: 1rem;"></i>
+                                <h5 style="color: var(--dark-navy); margin-bottom: 0.5rem;">ელ. ფოსტა</h5>
+                                <p style="color: var(--dark-navy); margin: 0;">
+                                    <a href="mailto:heritage@georgia.gov.ge" style="color: var(--dark-navy); text-decoration: none;">
+                                        heritage@georgia.gov.ge
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="p-4" style="background: var(--frost-blue); border-radius: 15px; height: 100%;">
+                                <i class="bi bi-geo-alt-fill" style="font-size: 2rem; color: var(--dark-navy); margin-bottom: 1rem;"></i>
+                                <h5 style="color: var(--dark-navy); margin-bottom: 0.5rem;">მისამართი</h5>
+                                <p style="color: var(--dark-navy); margin: 0;">
+                                    თბილისი 0105, საქართველო<br>
+                                    რუსთაველის გამზირი №8<br>
+                                    კულტურის სამინისტრო
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="p-4" style="background: var(--frost-blue); border-radius: 15px; height: 100%;">
+                                <i class="bi bi-clock-fill" style="font-size: 2rem; color: var(--dark-navy); margin-bottom: 1rem;"></i>
+                                <h5 style="color: var(--dark-navy); margin-bottom: 0.5rem;">სამუშაო საათები</h5>
+                                <p style="color: var(--dark-navy); margin: 0;">
+                                    ორშაბათი - პარასკევი<br>
+                                    10:00 - 17:00<br>
+                                    <small style="font-size: 0.8rem;">შაბათი - კვირა: დახურული</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <h5 style="color: var(--dark-navy); margin-bottom: 1rem;">გამოგვყევით სოციალურ ქსელებში</h5>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);">
+                                <i class="bi bi-twitter"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);">
+                                <i class="bi bi-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

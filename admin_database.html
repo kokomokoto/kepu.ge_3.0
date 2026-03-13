@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ადმინ პანელი - მონაცემთა ბაზა</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+        }
+        .media-thumb {
+            max-width: 100px;
+            max-height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .content-preview {
+            max-width: 200px;
+            word-wrap: break-word;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+        .user-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        .comment-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        .like-card {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">📊 ადმინ პანელი - მონაცემთა ბაზა</h1>
+                
+                <!-- Statistics -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="stat-card user-card">
+                            <h3>👥 მომხმარებლები</h3>
+                            <h2>{{ users|length }}</h2>
+                            <p>დარეგისტრირებული მომხმარებლები</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card comment-card">
+                            <h3>💬 კომენტარები</h3>
+                            <h2>{{ comments|length }}</h2>
+                            <p>სულ კომენტარები</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card like-card">
+                            <h3>❤️ ლაიქები</h3>
+                            <h2>{{ likes|length }}</h2>
+                            <p>სულ ლაიქები</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="mt-5">
+                    <h3>👥 დარეგისტრირებული მომხმარებლები</h3>
+                    <div class="table-container">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>სახელი</th>
+                                    <th>ელ. ფოსტა</th>
+                                    <th>ვერიფიცირებული</th>
+                                    <th>რეგისტრაცია</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.name }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>
+                                        {% if user.email_verified %}
+                                            <span class="badge bg-success">✓ ვერიფიცირებული</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">⏳ მოლოდინში</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Comments Table -->
+                <div class="mt-5">
+                    <h3>💬 ყველა კომენტარი</h3>
+                    <div class="table-container">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ავტორი</th>
+                                    <th>პროექტი</th>
+                                    <th>შიგთავსი</th>
+                                    <th>მედია</th>
+                                    <th>პარენტი</th>
+                                    <th>ლაიქები</th>
+                                    <th>თარიღი</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for comment in comments %}
+                                <tr>
+                                    <td>{{ comment.id }}</td>
+                                    <td>
+                                        {% if comment.author %}
+                                            <strong>{{ comment.author.name }}</strong><br>
+                                            <small class="text-muted">{{ comment.author.email }}</small>
+                                        {% else %}
+                                            <span class="text-muted">Unknown</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><span class="badge bg-primary">{{ comment.project_id }}</span></td>
+                                    <td class="content-preview">
+                                        {% if comment.content %}
+                                            {{ comment.content[:100] }}{% if comment.content|length > 100 %}...{% endif %}
+                                        {% else %}
+                                            <em class="text-muted">ტექსტი არ არის</em>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if comment.has_media() %}
+                                            {% for media_url in comment.get_media_urls() %}
+                                                <div style="margin-bottom: 5px;">
+                                                    {% if media_url.endswith(('.jpg', '.jpeg', '.png', '.gif')) or 'image' in media_url %}
+                                                        <img src="{{ media_url }}" class="media-thumb" alt="Image" style="margin-right: 5px;">
+                                                    {% elif media_url.endswith(('.mp4', '.webm', '.ogg')) or 'video' in media_url %}
+                                                        <video class="media-thumb" muted style="margin-right: 5px;">
+                                                            <source src="{{ media_url }}">
+                                                        </video>
+                                                    {% else %}
+                                                        <a href="{{ media_url }}" target="_blank" class="btn btn-sm btn-outline-primary">📎 ფაილი</a>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="text-muted">არ არის</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if comment.parent_id %}
+                                            <span class="badge bg-secondary">Reply to {{ comment.parent_id }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Main</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-danger">{{ comment.get_like_count() }}</span>
+                                    </td>
+                                    <td>{{ comment.created_at.strftime('%Y-%m-%d %H:%M') if comment.created_at else 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Likes Table -->
+                <div class="mt-5">
+                    <h3>❤️ ყველა ლაიქი</h3>
+                    <div class="table-container">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>მომხმარებელი</th>
+                                    <th>კომენტარი</th>
+                                    <th>კომენტარის ავტორი</th>
+                                    <th>თარიღი</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for like in likes %}
+                                <tr>
+                                    <td>{{ like.id }}</td>
+                                    <td>
+                                        {% if like.user %}
+                                            <strong>{{ like.user.name }}</strong><br>
+                                            <small class="text-muted">{{ like.user.email }}</small>
+                                        {% else %}
+                                            <span class="text-muted">Unknown</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if like.comment %}
+                                            <div class="content-preview">
+                                                {{ like.comment.content[:50] if like.comment.content else 'Media only' }}...
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">Comment deleted</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if like.comment and like.comment.author %}
+                                            {{ like.comment.author.name }}
+                                        {% else %}
+                                            <span class="text-muted">Unknown</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ like.created_at.strftime('%Y-%m-%d %H:%M') if like.created_at else 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Back Button -->
+                <div class="mt-4 mb-5">
+                    <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary">← უკან ადმინ პანელზე</a>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">🏠 მთავარ გვერდზე</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

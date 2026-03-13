@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <title>პროექტის ატვირთვა</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h1>ახალი პროექტის ატვირთვა</h1>
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label">სათაური</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">აღწერა</label>
+            <textarea name="description" class="form-control" rows="12" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">3D viewer (iframe ან URL)</label>
+            <input type="text" name="viewer3d" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">3D მოდელის ZIP ფაილი (არჩევით)</label>
+            <input type="file" name="zip_files" class="form-control" accept=".zip" multiple>
+            <small class="form-text text-muted">ატვირთეთ ZIP ფაილი რომელიც შეიცავს 3D მოდელს და HTML viewer-ს</small>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Loading ვიდეო URL (3D viewer-ის ჩატვირთვამდე)</label>
+            <input type="text" name="loading_video" class="form-control" placeholder="მაგ: https://example.com/loading-video.mp4">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Loading მუსიკა URL (3D viewer-ის ჩატვირთვამდე)</label>
+            <input type="text" name="loading_audio" class="form-control" placeholder="მაგ: https://example.com/loading-music.mp3">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">ადგილმდებარეობა (Latitude)</label>
+            <input type="text" name="latitude" class="form-control" placeholder="მაგ: 41.7151">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">ადგილმდებარეობა (Longitude)</label>
+            <input type="text" name="longitude" class="form-control" placeholder="მაგ: 44.8271">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">რიგი (დაბალი რიცხვი = უფრო წინა)</label>
+            <input type="number" name="sort_order" class="form-control" value="0" placeholder="0">
+            <small class="form-text text-muted">დაბალი რიცხვი ნიშნავს უფრო წინა პოზიციას სიაში</small>
+        </div>
+        
+        <!-- Categories Section -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>ტიპი</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="type_categories" value="ეკლესია" id="type_church">
+                    <label class="form-check-label" for="type_church">ეკლესია</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="type_categories" value="ციხე" id="type_fortress">
+                    <label class="form-check-label" for="type_fortress">ციხე</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="type_categories" value="მუზეუმი" id="type_museum">
+                    <label class="form-check-label" for="type_museum">მუზეუმი</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="type_categories" value="ძეგლი" id="type_monument">
+                    <label class="form-check-label" for="type_monument">ძეგლი</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h5>პერიოდი</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="period_categories" value="ქრისტეშობამდე" id="period_bc">
+                    <label class="form-check-label" for="period_bc">ქრისტეშობამდე</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="period_categories" value="I-X საუკუნე" id="period_1_10">
+                    <label class="form-check-label" for="period_1_10">I-X საუკუნე</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="period_categories" value="XI-XVII საუკუნე" id="period_11_17">
+                    <label class="form-check-label" for="period_11_17">XI-XVII საუკუნე</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="period_categories" value="1801-1918 წელი" id="period_1801_1918">
+                    <label class="form-check-label" for="period_1801_1918">1801-1918 წელი</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="period_categories" value="1918-21 წელი" id="period_1918_21">
+                    <label class="form-check-label" for="period_1918_21">1918-21 წელი</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="period_categories" value="1922-53 წელი" id="period_1922_53">
+                    <label class="form-check-label" for="period_1922_53">1922-53 წელი</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="period_categories" value="1954-91 წელი" id="period_1954_91">
+                    <label class="form-check-label" for="period_1954_91">1954-91 წელი</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="period_categories" value="1991 + წელი" id="period_1991_plus">
+                    <label class="form-check-label" for="period_1991_plus">1991 + წელი</label>
+                </div>
+            </div>
+        </div>
+        
+        <h4>პროექტის ინფორმაცია</h4>
+        <div id="projectInfo">
+            <div class="mb-2 info-pair">
+                <div class="row">
+                    <div class="col-md-4">
+                        <input type="text" name="info_key_0" class="form-control" placeholder="ველის სახელი (მაგ: არქიტექტორი)">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" name="info_value_0" class="form-control" placeholder="მნიშვნელობა (მაგ: ქუჩუ დგებუაძე)">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger btn-sm remove-info">-</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" id="addInfo" class="btn btn-secondary btn-sm mb-3">+ ახალი ველის დამატება</button>
+        <script>
+        let infoCount = 1;
+        document.getElementById('addInfo').addEventListener('click', function() {
+            const container = document.getElementById('projectInfo');
+            const div = document.createElement('div');
+            div.className = 'mb-2 info-pair';
+            div.innerHTML = `
+                <div class="row">
+                    <div class="col-md-4">
+                        <input type="text" name="info_key_${infoCount}" class="form-control" placeholder="ველის სახელი">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" name="info_value_${infoCount}" class="form-control" placeholder="მნიშვნელობა">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger btn-sm remove-info">-</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            infoCount++;
+        });
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-info')) {
+                e.target.closest('.info-pair').remove();
+            }
+        });
+        </script>
+        <!-- Images Section - URL Based -->
+        <div class="mb-4">
+            <h5>სურათების მართვა (URL-ებით)</h5>
+            <div id="allImagesContainer">
+                <!-- პირველი სურათი -->
+                <div class="row mb-2 image-url-row border p-2 rounded">
+                    <div class="col-md-5">
+                        <label class="form-label small">სურათის URL *</label>
+                        <input type="url" name="all_image_url_0" class="form-control" 
+                               placeholder="https://example.com/image.jpg" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">აღწერა</label>
+                        <input type="text" name="all_image_caption_0" class="form-control" 
+                               placeholder="სურათის აღწერა">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">მთავარი სურათი</label>
+                        <div class="form-check">
+                            <input type="radio" name="main_image_selector" value="0" checked class="form-check-input">
+                            <label class="form-check-label">მთავარი</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">&nbsp;</label>
+                        <button type="button" class="btn btn-danger btn-sm d-block remove-image" disabled>წაშლა</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <button type="button" id="addImageUrl" class="btn btn-success btn-sm">+ ახალი სურათის დამატება</button>
+                    <small class="text-muted d-block mt-2">
+                        💡 ყველა სურათი URL-ით ატვირთეთ. მთავარი სურათი რადიო ღილაკით მონიშნეთ.
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        let imageCount = 1;
+        
+        document.getElementById('addImageUrl').addEventListener('click', function() {
+            const container = document.getElementById('allImagesContainer');
+            const div = document.createElement('div');
+            div.className = 'row mb-2 image-url-row border p-2 rounded';
+            div.innerHTML = `
+                <div class="col-md-5">
+                    <label class="form-label small">სურათის URL</label>
+                    <input type="url" name="all_image_url_${imageCount}" class="form-control" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small">აღწერა</label>
+                    <input type="text" name="all_image_caption_${imageCount}" class="form-control" placeholder="სურათის აღწერა">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">მთავარი სურათი</label>
+                    <div class="form-check">
+                        <input type="radio" name="main_image_selector" value="${imageCount}" class="form-check-input">
+                        <label class="form-check-label">მთავარი</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">&nbsp;</label>
+                    <button type="button" class="btn btn-danger btn-sm d-block remove-image">წაშლა</button>
+                </div>
+            `;
+            container.appendChild(div);
+            imageCount++;
+            
+            // Enable first remove button if more than 1 image
+            updateRemoveButtons();
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-image')) {
+                e.target.closest('.image-url-row').remove();
+                updateRemoveButtons();
+            }
+        });
+        
+        function updateRemoveButtons() {
+            const rows = document.querySelectorAll('.image-url-row');
+            rows.forEach((row, index) => {
+                const btn = row.querySelector('.remove-image');
+                btn.disabled = rows.length === 1; // Disable if only one image left
+            });
+        }
+        </script>
+        
+        <!-- File Upload Section -->
+        <div class="mb-4">
+            <h5>ფაილების ატვირთვა (კომპიუტერიდან)</h5>
+            <div class="alert alert-info">
+                <strong>ახალი ფუნქციონალი:</strong> ახლა შეგიძლიათ ფოტოები და 3D ფაილები პირდაპირ კომპიუტერიდან აიტვირთოთ. ფაილები ავტომატურად აიტვირთება Cloudinary-ზე.
+            </div>
+
+            <!-- Image Files Upload -->
+            <div class="mb-3">
+                <label class="form-label">ფოტოების ატვირთვა</label>
+                <input type="file" name="image_files" class="form-control" multiple accept="image/*">
+                <small class="form-text text-muted">აირჩიეთ მრავალი ფოტო (JPG, PNG, GIF, WebP)</small>
+            </div>
+
+            <!-- 3D Model Files Upload -->
+            <div class="mb-3">
+                <label class="form-label">3D მოდელების ატვირთვა</label>
+                <input type="file" name="model_files" class="form-control" multiple accept=".obj,.stl,.gltf,.glb,.fbx,.dae,.3ds,.zip">
+                <small class="form-text text-muted">აირჩიეთ 3D ფაილები (OBJ, STL, GLTF, GLB, FBX, DAE, 3DS) ან ZIP ფაილები SuperSplat Editor-დან</small>
+            </div>
+
+            <!-- Description File Upload -->
+            <div class="mb-3">
+                <label class="form-label">აღწერის ფაილის ან 3D ZIP ფაილის ატვირთვა</label>
+                <input type="file" name="description_file" class="form-control" accept=".txt,.md,.html,.doc,.docx,.zip">
+                <small class="form-text text-muted">
+                    აირჩიეთ ტექსტური ფაილი (TXT, MD, HTML, DOC, DOCX) ან 3D ZIP ფაილი (SuperSplat Editor-დან).<br>
+                    ZIP ფაილის შემთხვევაში HTML შინაარსი ავტომატურად ამოიღება და გამოყენებული იქნება 3D viewer-ისთვის.
+                </small>
+            </div>
+        </div>
+        
+        <script>
+        // Show loading modal on form submit
+        document.querySelector('button[type="submit"]').addEventListener('click', function(e) {
+            // Check if any files are selected
+            const imageFiles = document.querySelector('input[name="image_files"]').files;
+            const modelFiles = document.querySelector('input[name="model_files"]').files;
+            const descFile = document.querySelector('input[name="description_file"]').files;
+            
+            const hasFiles = (imageFiles && imageFiles.length > 0) || 
+                            (modelFiles && modelFiles.length > 0) || 
+                            (descFile && descFile.length > 0);
+            
+            if (hasFiles) {
+                // Show loading modal
+                const modal = document.createElement('div');
+                modal.className = 'modal fade show';
+                modal.style.display = 'block';
+                modal.innerHTML = `
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">ატვირთვა...</h5>
+                            </div>
+                            <div class="modal-body text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">ატვირთვა...</span>
+                                </div>
+                                <p class="mt-3">გთხოვთ დაელოდოთ, ფაილები აიტვირთება...</p>
+                                <div class="progress mt-3">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                </div>
+                                <small class="text-muted mt-2">3D ZIP ფაილების დამუშავება შეიძლება დიდხანს გასტანოს</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-backdrop fade show"></div>
+                `;
+                document.body.appendChild(modal);
+            }
+        });
+        </script>
+        
+        <button type="submit" class="btn btn-primary">ატვირთვა</button>
+        <a href="/admin/panel" class="btn btn-link">უკან</a>
+    </form>
+</div>
+</body>
+</html>
