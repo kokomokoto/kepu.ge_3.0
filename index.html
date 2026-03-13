@@ -1,318 +1,141 @@
-{% extends 'base.html' %}
-{% block title %}Georgian Heritage Projects - DEBUG VERSION{% endblock %}
-
-{% block head %}
-<style>
-    .viewer-wrap{margin-bottom:20px;}
-    .viewer-iframe {
-        width: 100%;
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
-    }
-    @media (min-width: 768px) {
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Georgian Heritage Projects - პროექტების პორტფოლიო</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="static/style.css">
+    <style>
+        .viewer-wrap{margin-bottom:20px;}
         .viewer-iframe {
-            height: 60vh;
-            min-height: 400px;
-            max-height: 600px;
+            width: 100%;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
         }
-    }
-    @media (max-width: 767px) {
-        .viewer-iframe {
-            height: 50vh;
-            min-height: 300px;
-            max-height: 400px;
+        @media (min-width: 768px) {
+            .viewer-iframe { height: 60vh; min-height: 400px; max-height: 600px; }
         }
-    }
-    @media (min-width: 1200px) {
-        .viewer-iframe {
-            height: 65vh;
-            max-height: 700px;
+        @media (max-width: 767px) {
+            .viewer-iframe { height: 50vh; min-height: 300px; max-height: 400px; }
         }
-    }
-</style>
-{% endblock %}
-
-{% block filter_button %}
-<a href="#" class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidepanel" aria-controls="filterSidepanel">
-    <i class="bi bi-funnel" style="font-size: 1rem;"></i> FILTERS
-</a>
-{% endblock %}
-
-{% block filters %}
-<!-- Category Filters moved to sidepanel -->
-<div class="mb-4">
-    <h6 class="fw-bold mb-3">ტიპი</h6>
-    <div class="row">
-        <div class="col-12">
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="ეკლესია" id="filter_church" data-type="type">
-                <label class="form-check-label" for="filter_church">ეკლესია</label>
+        @media (min-width: 1200px) {
+            .viewer-iframe { height: 65vh; max-height: 700px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container">
+            <div class="mobile-header-top">
+                <div class="logo">
+                    <a href="index.html" class="text-white text-decoration-none">✻</a>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="bi bi-list"></i>
+                </button>
             </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="ციხე" id="filter_fortress" data-type="type">
-                <label class="form-check-label" for="filter_fortress">ციხე</label>
-            </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="მუზეუმი" id="filter_museum" data-type="type">
-                <label class="form-check-label" for="filter_museum">მუზეუმი</label>
-            </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="ძეგლი" id="filter_monument" data-type="type">
-                <label class="form-check-label" for="filter_monument">ძეგლი</label>
+            <nav id="mainNav">
+                <a href="index.html" class="active">PROJECTS</a>
+                <a href="about.html">ABOUT</a>
+                <a href="contact.html">CONTACT</a>
+            </nav>
+            <div class="d-flex align-items-center gap-1">
+                <a href="#" class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidepanel" aria-controls="filterSidepanel">
+                    <i class="bi bi-funnel" style="font-size: 1rem;"></i> FILTERS
+                </a>
             </div>
         </div>
-    </div>
-</div>
+    </header>
 
-<div class="mb-4">
-    <h6 class="fw-bold mb-3">პერიოდი</h6>
-    <div class="row">
-        <div class="col-12">
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="ქრისტეშობამდე" id="filter_bc" data-type="period">
-                <label class="form-check-label" for="filter_bc">ქრისტეშობამდე</label>
-            </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="I-X საუკუნე" id="filter_1_10" data-type="period">
-                <label class="form-check-label" for="filter_1_10">I-X საუკუნე</label>
-            </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="XI-XVII საუკუნე" id="filter_11_17" data-type="period">
-                <label class="form-check-label" for="filter_11_17">XI-XVII საუკუნე</label>
-            </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="1801-1918 წელი" id="filter_1801_1918" data-type="period">
-                <label class="form-check-label" for="filter_1801_1918">1801-1918</label>
-            </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="1918-21 წელი" id="filter_1918_21" data-type="period">
-                <label class="form-check-label" for="filter_1918_21">1918-21</label>
-            </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="1922-53 წელი" id="filter_1922_53" data-type="period">
-                <label class="form-check-label" for="filter_1922_53">1922-53</label>
-            </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="1954-91 წელი" id="filter_1954_91" data-type="period">
-                <label class="form-check-label" for="filter_1954_91">1954-91</label>
-            </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input filter-checkbox" type="checkbox" value="1991 + წელი" id="filter_1991_plus" data-type="period">
-                <label class="form-check-label" for="filter_1991_plus">1991+</label>
-            </div>
+    <!-- Sidepanel for filters -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="filterSidepanel" aria-labelledby="filterSidepanelLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="filterSidepanelLabel">ფილტრები</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-    </div>
-</div>
-
-<div class="d-grid gap-2">
-    <button type="button" class="btn btn-outline-secondary btn-sm" id="clearFilters">
-        ყველა ფილტრის გასუფთავება
-    </button>
-</div>
-{% endblock %}
-
-{% block content %}
-    <!-- Home 3D Viewer (global setting from admin panel) -->
-    {% if home_3d_viewer %}
-    <div class="container mb-4" style="margin-top: 30px;">
-        <div class="viewer-wrap">
-            {% if home_3d_viewer.startswith('<') %}
-                {{ home_3d_viewer|safe }}
-            {% else %}
-                <iframe src="{{ home_3d_viewer }}" class="viewer-iframe"
-                        allowfullscreen webkitallowfullscreen mozallowfullscreen
-                        allow="xr-spatial-tracking; gyroscope; accelerometer">
-                </iframe>
-            {% endif %}
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- Projects Map -->
-    <div class="container mb-4">
-        <div id="map" style="height: 350px; width: 100%; border-radius: 10px; margin-bottom: 20px;"></div>
-    </div>
-    
-    <div id="projectsData" style="display:none;">{{ projects|tojson|safe }}</div>
-    
-    <div style="overflow:visible;">
-        <div id="projectsContainer" style="display:flex; flex-wrap:wrap; gap:24px;">
-        {% for project in projects %}
-        <div class="project-card clickable-card" style="min-width:320px; max-width:340px; flex:0 0 320px; cursor: pointer;" 
-             data-type-categories="{{ project.type_categories|join(',') if project.type_categories else '' }}"
-             data-period-categories="{{ project.period_categories|join(',') if project.period_categories else '' }}"
-             data-href="/project/{{ project.id }}">
-            <div class="card h-100">
-                {% if project.main_image %}
-                <img src="{{ project.main_image }}" class="card-img-top" alt="{{ project.title }}">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ project.title }}</h5>
-                    
+        <div class="offcanvas-body">
+            <div class="mb-4">
+                <h6 class="fw-bold mb-3">ტიპი</h6>
+                <div class="col-12">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="ეკლესია" id="filter_church" data-type="type">
+                        <label class="form-check-label" for="filter_church">ეკლესია</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="ციხე" id="filter_fortress" data-type="type">
+                        <label class="form-check-label" for="filter_fortress">ციხე</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="მუზეუმი" id="filter_museum" data-type="type">
+                        <label class="form-check-label" for="filter_museum">მუზეუმი</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="ძეგლი" id="filter_monument" data-type="type">
+                        <label class="form-check-label" for="filter_monument">ძეგლი</label>
+                    </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
+            <div class="mb-4">
+                <h6 class="fw-bold mb-3">პერიოდი</h6>
+                <div class="col-12">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="ქრისტეშობამდე" id="filter_bc" data-type="period">
+                        <label class="form-check-label" for="filter_bc">ქრისტეშობამდე</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="I-X საუკუნე" id="filter_1_10" data-type="period">
+                        <label class="form-check-label" for="filter_1_10">I-X საუკუნე</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="XI-XVII საუკუნე" id="filter_11_17" data-type="period">
+                        <label class="form-check-label" for="filter_11_17">XI-XVII საუკუნე</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="1801-1918 წელი" id="filter_1801_1918" data-type="period">
+                        <label class="form-check-label" for="filter_1801_1918">1801-1918</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="1918-21 წელი" id="filter_1918_21" data-type="period">
+                        <label class="form-check-label" for="filter_1918_21">1918-21</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="1922-53 წელი" id="filter_1922_53" data-type="period">
+                        <label class="form-check-label" for="filter_1922_53">1922-53</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="1954-91 წელი" id="filter_1954_91" data-type="period">
+                        <label class="form-check-label" for="filter_1954_91">1954-91</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" value="1991 + წელი" id="filter_1991_plus" data-type="period">
+                        <label class="form-check-label" for="filter_1991_plus">1991+</label>
+                    </div>
+                </div>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="clearFilters">
+                    ყველა ფილტრის გასუფთავება
+                </button>
+            </div>
         </div>
     </div>
-{% endblock %}
-    {% block scripts %}
-    <script>
-    // Set search input value from URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const searchQuery = urlParams.get('q');
-    if (searchQuery) {
-        document.getElementById('searchInput').value = searchQuery;
-    }
-    
-    let allProjects = document.querySelectorAll('.project-card');
-    
-    // Add click event listeners to project cards for proper middle-click support
-    allProjects.forEach(card => {
-        // Left click - navigate in same tab
-        card.addEventListener('click', function(e) {
-            const href = this.getAttribute('data-href');
-            if (href) {
-                window.location.href = href;
-            }
-        });
-        
-        // Middle click - open in new tab
-        card.addEventListener('auxclick', function(e) {
-            if (e.button === 1) { // Middle click
-                e.preventDefault();
-                const href = this.getAttribute('data-href');
-                if (href) {
-                    window.open(href, '_blank');
-                }
-            }
-        });
-    });
-    
-    // Category filters
-    document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', applyFilters);
-    });
-    
-    // Clear filters functionality
-    document.getElementById('clearFilters').addEventListener('click', function() {
-        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        applyFilters();
-    });
-    
-    function applyFilters() {
-        const selectedTypes = Array.from(document.querySelectorAll('.filter-checkbox[data-type="type"]:checked')).map(cb => cb.value);
-        const selectedPeriods = Array.from(document.querySelectorAll('.filter-checkbox[data-type="period"]:checked')).map(cb => cb.value);
-        
-        allProjects.forEach(project => {
-            const projectTypes = project.getAttribute('data-type-categories').split(',').filter(t => t);
-            const projectPeriods = project.getAttribute('data-period-categories').split(',').filter(p => p);
-            
-            let showProject = true;
-            
-            // If any type filters are selected, project must have at least one matching type
-            if (selectedTypes.length > 0) {
-                showProject = showProject && selectedTypes.some(type => projectTypes.includes(type));
-            }
-            
-            // If any period filters are selected, project must have at least one matching period
-            if (selectedPeriods.length > 0) {
-                showProject = showProject && selectedPeriods.some(period => projectPeriods.includes(period));
-            }
-            
-            project.style.display = showProject ? 'block' : 'none';
-        });
-    }
 
-    // Initialize map when DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeMap();
-    });
-    </script>
+    <main class="container mb-5">
+        <!-- Projects Map -->
+        <div class="container mb-4">
+            <div id="map" style="height: 350px; width: 100%; border-radius: 10px; margin-bottom: 20px;"></div>
+        </div>
 
-    <script>
-    function initializeMap() {
-        try {
-            console.log('Initializing map...');
-            
-            // Check if map div exists
-            var mapDiv = document.getElementById('map');
-            if (!mapDiv) {
-                console.error('Map div not found');
-                return;
-            }
-            
-            // Initialize map centered on Georgia
-            var map = L.map('map').setView([42.0, 43.5], 7);
-            console.log('Map created');
-
-            // Add OpenStreetMap tiles
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-            console.log('Tiles added');
-
-            // Get projects data from hidden div
-            var projectsData = document.getElementById('projectsData');
-            if (!projectsData) {
-                console.error('projectsData div not found');
-                return;
-            }
-            
-            console.log('Raw projects data:', projectsData.textContent.substring(0, 200) + '...');
-            
-            var projects = JSON.parse(projectsData.textContent);
-            console.log('Projects parsed:', projects.length);
-
-            // Add markers for each project with coordinates
-            var markers = [];
-            projects.forEach(function(project, index) {
-                console.log('Processing project', index, project.title, project.latitude, project.longitude);
-                
-                if (project.latitude && project.longitude) {
-                    var lat = parseFloat(project.latitude);
-                    var lng = parseFloat(project.longitude);
-                    
-                    console.log('Parsed coordinates:', lat, lng);
-                    
-                    if (!isNaN(lat) && !isNaN(lng)) {
-                        var marker = L.marker([lat, lng]).addTo(map);
-                        
-                        // Create popup content
-                        var popupContent = '<div style="max-width: 200px;">' +
-                            '<h6>' + project.title + '</h6>' +
-                            '<a href="/project/' + project.id + '" class="btn btn-sm btn-primary">იხილეთ დეტალები</a>' +
-                            '</div>';
-                        
-                        marker.bindPopup(popupContent);
-                        markers.push([lat, lng]);
-                        console.log('Marker added for', project.title);
-                    } else {
-                        console.warn('Invalid coordinates for', project.title, project.latitude, project.longitude);
-                    }
-                } else {
-                    console.log('No coordinates for', project.title);
-                }
-            });
-
-            console.log('Total markers added:', markers.length);
-            
-            // Fit map to show all markers
-            if (markers.length > 0) {
-                map.fitBounds(markers);
-                console.log('Map fitted to bounds');
-            } else {
-                console.warn('No markers to fit');
-            }
-        } catch (error) {
-            console.error('Map initialization error:', error);
-        }
-    }
-    </script>
-    {% endblock %}
+        <div style="overflow:visible;">
+            <div id="projectsContainer" style="display:flex; flex-wrap:wrap; gap:24px;"></div>
+        </div>
+    </main>
 
     <!-- About Section -->
     <section id="about" class="py-5" style="background: linear-gradient(135deg, var(--deep-forest-green) 0%, var(--dark-navy) 100%); color: white; scroll-margin-top: 80px;">
@@ -375,63 +198,265 @@
                         თუ გაქვთ შეკითხვები, წინადადებები ან გსურთ თანამშრომლობა, 
                         გთხოვთ დაგვიკავშირდეთ ქვემოთ მოცემული საშუალებებით.
                     </p>
-                    
                     <div class="row g-4">
                         <div class="col-md-4">
                             <div class="p-4" style="background: var(--frost-blue); border-radius: 15px; height: 100%;">
                                 <i class="bi bi-envelope-fill" style="font-size: 2rem; color: var(--dark-navy); margin-bottom: 1rem;"></i>
                                 <h5 style="color: var(--dark-navy); margin-bottom: 0.5rem;">ელ. ფოსტა</h5>
                                 <p style="color: var(--dark-navy); margin: 0;">
-                                    <a href="mailto:heritage@georgia.gov.ge" style="color: var(--dark-navy); text-decoration: none;">
-                                        heritage@georgia.gov.ge
-                                    </a>
+                                    <a href="mailto:heritage@georgia.gov.ge" style="color: var(--dark-navy); text-decoration: none;">heritage@georgia.gov.ge</a>
                                 </p>
                             </div>
                         </div>
-                        
                         <div class="col-md-4">
                             <div class="p-4" style="background: var(--frost-blue); border-radius: 15px; height: 100%;">
                                 <i class="bi bi-geo-alt-fill" style="font-size: 2rem; color: var(--dark-navy); margin-bottom: 1rem;"></i>
                                 <h5 style="color: var(--dark-navy); margin-bottom: 0.5rem;">მისამართი</h5>
                                 <p style="color: var(--dark-navy); margin: 0;">
-                                    თბილისი 0105, საქართველო<br>
-                                    რუსთაველის გამზირი №8<br>
-                                    კულტურის სამინისტრო
+                                    თბილისი 0105, საქართველო<br>რუსთაველის გამზირი №8<br>კულტურის სამინისტრო
                                 </p>
                             </div>
                         </div>
-                        
                         <div class="col-md-4">
                             <div class="p-4" style="background: var(--frost-blue); border-radius: 15px; height: 100%;">
                                 <i class="bi bi-clock-fill" style="font-size: 2rem; color: var(--dark-navy); margin-bottom: 1rem;"></i>
                                 <h5 style="color: var(--dark-navy); margin-bottom: 0.5rem;">სამუშაო საათები</h5>
                                 <p style="color: var(--dark-navy); margin: 0;">
-                                    ორშაბათი - პარასკევი<br>
-                                    10:00 - 17:00<br>
+                                    ორშაბათი - პარასკევი<br>10:00 - 17:00<br>
                                     <small style="font-size: 0.8rem;">შაბათი - კვირა: დახურული</small>
                                 </p>
                             </div>
                         </div>
                     </div>
-                    
                     <div class="mt-5">
                         <h5 style="color: var(--dark-navy); margin-bottom: 1rem;">გამოგვყევით სოციალურ ქსელებში</h5>
                         <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);">
-                                <i class="bi bi-facebook"></i>
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);">
-                                <i class="bi bi-instagram"></i>
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);">
-                                <i class="bi bi-twitter"></i>
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);">
-                                <i class="bi bi-youtube"></i>
-                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);"><i class="bi bi-twitter"></i></a>
+                            <a href="#" class="btn btn-outline-primary btn-lg" style="border-color: var(--dark-navy); color: var(--dark-navy);"><i class="bi bi-youtube"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <footer>
+        <div class="container text-center">
+            &copy; 2025 Georgian Heritage Portfolio. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+    // ===== EMBEDDED PROJECT DATA =====
+    var projectsData = [
+      {
+        "id": "project_7",
+        "title": "\u10d0\u10e1\u10d3\u10d0\u10e1\u10d3",
+        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/6)%20nariyala/4)%20photos/%E1%83%9C%E1%83%90%E1%83%A0%E1%83%98%E1%83%A7%E1%83%90%E1%83%9A%E1%83%90.jpg",
+        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/6)%20nariyala/1)%203d/nariyala%20cleand%20%20splat/index.html",
+        "description": "\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1",
+        "latitude": "",
+        "longitude": "",
+        "sort_order": 0,
+        "other_images": [],
+        "model_urls": [],
+        "project_info": {},
+        "type_categories": [],
+        "period_categories": [],
+        "loading_video": "",
+        "loading_audio": ""
+      },
+      {
+        "id": "project_6",
+        "title": "\u10e7\u10dd\u10d5\u10da\u10d0\u10d3\u10ec\u10db\u10d8\u10dc\u10d3\u10d0 \u10e6\u10d5\u10d7\u10d8\u10e1\u10db\u10e8\u10dd\u10d1\u10da\u10d8\u10e1 \u10ee\u10d0\u10e0\u10d4\u10d1\u10d8\u10e1 \u10d4\u10d9\u10da\u10d4\u10e1\u10d8\u10d0",
+        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/1)zgvis_eklesia/4)%20photos/gvtismshoblis_eklesia_tbilisis_zgva.jpg",
+        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/1)zgvis_eklesia/1)3d/Zgvis_eklesia/index.html",
+        "description": "\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1",
+        "latitude": "41.77092041809446",
+        "longitude": "44.81125899309245",
+        "sort_order": 0,
+        "other_images": [],
+        "model_urls": [],
+        "project_info": {"\u10db\u10d8\u10e1\u10d0\u10db\u10d0\u10e0\u10d7\u10d8": "\u10dc\u10e3\u10ea\u10e3\u10d1\u10d8\u10eb\u10d8\u10e1 \u10de\u10da\u10d0\u10e2\u10dd, III \u10db\u10d9/\u10e0.", "\u10d0\u10e0\u10e5\u10d8\u10e2\u10d4\u10e5\u10e2\u10e3\u10e0\u10d0": "\u10ef\u10d5\u10d0\u10e0-\u10d2\u10e3\u10db\u10d1\u10d0\u10d7\u10dd\u10d5\u10d0\u10dc\u10d8"},
+        "type_categories": ["\u10d4\u10d9\u10da\u10d4\u10e1\u10d8\u10d0"],
+        "period_categories": ["1991 + \u10ec\u10d4\u10da\u10d8"],
+        "loading_video": "None",
+        "loading_audio": "None"
+      },
+      {
+        "id": "project_3",
+        "title": "\u10e1\u10d0\u10e5\u10d0\u10e0\u10d7\u10d5\u10d4\u10da\u10dd\u10e1 \u10db\u10d0\u10e2\u10d8\u10d0\u10dc\u10d4",
+        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/3)%20zgvis%20monumenti/4)%20photos/saqartvelos_matiane_tbilisis_zgva.jpg",
+        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/3)%20zgvis%20monumenti/1)%203d/zgvis%20monumenti/index.html",
+        "description": "\u10e1\u10d0\u10e5\u10d0\u10e0\u10d7\u10d5\u10d4\u10da\u10dd\u10e1 \u10db\u10d0\u10e2\u10d8\u10d0\u10dc\u10d4 \u10e1\u10d0\u10e5\u10d0\u10e0\u10d7\u10d5\u10d4\u10da\u10dd\u10e1 \u10d8\u10e1\u10e2\u10dd\u10e0\u10d8\u10d8\u10e1\u10d0\u10d3\u10db\u10d8 \u10db\u10d8\u10eb\u10e6\u10d5\u10dc\u10d8\u10da\u10d8 \u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10d8\u10d0, \u10e0\u10dd\u10db\u10d4\u10da\u10d8\u10ea \u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10e8\u10d8, \u10dc\u10d0\u10eb\u10d0\u10da\u10d0\u10d3\u10d4\u10d5\u10d8\u10e1 \u10e0\u10d0\u10d8\u10dd\u10dc\u10e8\u10d8, \u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10d8\u10e1 \u10d6\u10e6\u10d5\u10d8\u10e1 \u10db\u10d8\u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4 \u10e2\u10d4\u10e0\u10d8\u10e2\u10dd\u10e0\u10d8\u10d0\u10d6\u10d4, \u10e7\u10d4\u10d4\u10dc\u10d8\u10e1 \u10db\u10d7\u10d0\u10d6\u10d4 \u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10e1.",
+        "latitude": "41.770641473938056",
+        "longitude": "44.81042155064574",
+        "sort_order": 0,
+        "other_images": [],
+        "model_urls": [],
+        "project_info": {"\u10d0\u10d5\u10e2\u10dd\u10e0\u10d8": "\u10d6\u10e3\u10e0\u10d0\u10d1 \u10ec\u10d4\u10e0\u10d4\u10d7\u10d4\u10da\u10d8", "\u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10d8": "\u10d1\u10e0\u10d8\u10dc\u10ef\u10d0\u10dd\u10e8\u10d8 \u10d3\u10d0 \u10e5\u10d5\u10d0\u10e8\u10d8\u10d0 \u10e8\u10d4\u10e1\u10e0\u10e3\u10da\u10d4\u10d1\u10d8", "\u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d4": "35 \u10db\u10d4\u10e2\u10e0\u10d8"},
+        "type_categories": ["\u10eb\u10d4\u10d2\u10da\u10d8"],
+        "period_categories": ["1954-91 \u10ec\u10d4\u10da\u10d8", "1991 + \u10ec\u10d4\u10da\u10d8"],
+        "loading_video": "",
+        "loading_audio": ""
+      },
+      {
+        "id": "-",
+        "title": "\u10d5\u10d0\u10df\u10d0-\u10e4\u10e8\u10d0\u10d5\u10d4\u10da\u10d0",
+        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/4)%20photos/%E1%83%95%E1%83%90%E1%83%90_%E1%83%A4%E1%83%A8%E1%83%90%E1%83%95%E1%83%94%E1%83%9A%E1%83%90.jpg",
+        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/1)%203d/VAJAS%20dzegli%20V2/index.html",
+        "description": "",
+        "latitude": "41.723851188331594",
+        "longitude": "44.72893462004094",
+        "sort_order": 0,
+        "other_images": [
+          {"url": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/4)%20photos/vaja_fshavela_dzegli.jpg", "caption": "\u10d5\u10d0\u10df\u10d0-\u10e4\u10e8\u10d0\u10d5\u10d4\u10da\u10d0"},
+          {"url": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/4)%20photos/berdzenishvilis%20versia.jpg", "caption": "\u10d1\u10d4\u10e0\u10eb\u10d4\u10dc\u10d8\u10e8\u10d5\u10d8\u10da\u10d8\u10e1 \u10d5\u10d4\u10e0\u10e1\u10d8\u10d0"}
+        ],
+        "model_urls": [],
+        "project_info": {"\u10da\u10e3\u10d9\u10d0 \u10e0\u10d0\u10d6\u10d8\u10d9\u10d0\u10e8\u10d5\u10d8\u10da\u10d8": "\u10d5\u10d0\u10df\u10d0-\u10e4\u10e8\u10d0\u10d5\u10d4\u10da\u10d0"},
+        "type_categories": ["\u10eb\u10d4\u10d2\u10da\u10d8"],
+        "period_categories": ["1954-91 \u10ec\u10d4\u10da\u10d8"],
+        "loading_video": "",
+        "loading_audio": ""
+      },
+      {
+        "id": "project_5",
+        "title": "\u10d0\u10e0\u10e5\u10d4\u10dd\u10da\u10dd\u10d2\u10d8\u10e3\u10e0\u10d8 \u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8",
+        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/5)%20nino%20da%20museumi/4)%20photos/arqeologiis_muzeumi_Archaeological.jpg",
+        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/5)%20nino%20da%20museumi/1)%203d/nino%2Bmuzeumi%201/index.html",
+        "description": "\u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10e8\u10d8, \u10db\u10d7\u10d8\u10e1 \u10e4\u10d4\u10e0\u10d3\u10dd\u10d1\u10d6\u10d4 \u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4 \u10e7\u10dd\u10e4\u10d8\u10da\u10d8 \u10d0\u10e0\u10e5\u10d4\u10dd\u10da\u10dd\u10d2\u10d8\u10e3\u10e0\u10d8 \u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8 \u10d0\u10e8\u10d4\u10dc\u10d3\u10d0 1988 \u10ec\u10d4\u10da\u10e1 \u10d3\u10d0 \u10d3\u10d0\u10d0\u10de\u10e0\u10dd\u10d4\u10e5\u10e2\u10d0 \u10e8\u10dd\u10d7\u10d0 \u10e7\u10d0\u10d5\u10da\u10d0\u10e8\u10d5\u10d8\u10da\u10d8.",
+        "latitude": "41.76390721156297",
+        "longitude": "44.76669880345213",
+        "sort_order": 0,
+        "other_images": [
+          {"url": "https://pub-e596682234f34e708445409c12658970.r2.dev/5)%20nino%20da%20museumi/4)%20photos/arqeuloggis_muzeumi_wminda_ninos_zdegli.jpg", "caption": "\u10d0\u10e0\u10e5\u10d4\u10dd\u10da\u10dd\u10d2\u10d8\u10e3\u10e0\u10d8 \u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8 \u10d3\u10d0 \u10ec\u10db\u10d8\u10dc\u10d3\u10d0 \u10dc\u10d8\u10dc\u10dd\u10e1 \u10e5\u10d0\u10dc\u10d3\u10d0\u10d9\u10d4\u10d1\u10d0"}
+        ],
+        "model_urls": [],
+        "project_info": {"\u10d3\u10d0\u10d0\u10de\u10e0\u10dd\u10d4\u10e5\u10e2\u10d0": "\u10e8\u10dd\u10d7\u10d0 \u10e7\u10d0\u10d5\u10da\u10d0\u10e8\u10d5\u10d8\u10da\u10d8"},
+        "type_categories": ["\u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8"],
+        "period_categories": ["\u10e5\u10e0\u10d8\u10e1\u10e2\u10d4\u10e8\u10dd\u10d1\u10d0\u10db\u10d3\u10d4", "1954-91 \u10ec\u10d4\u10da\u10d8"],
+        "loading_video": "",
+        "loading_audio": ""
+      },
+      {
+        "id": "project_2",
+        "title": "\u10d2\u10d0\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10d1\u10d8\u10e1 \u10e5\u10d0\u10dc\u10d3\u10d0\u10d9\u10d4\u10d1\u10d0",
+        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/2)%20vakis%20dzegli/4)%20photos/vakis_gamarjvebis_qandakeba.jpg",
+        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/2)%20vakis%20dzegli/1)%203d/VAKIS%20dzegli/index.html",
+        "description": "\u10d3\u10d8\u10d3\u10d8 \u10e1\u10d0\u10db\u10d0\u10db\u10e3\u10da\u10dd \u10dd\u10db\u10e8\u10d8 \u10d2\u10d0\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10d1\u10d8\u10e1 \u10e5\u10d0\u10dc\u10d3\u10d0\u10d9\u10d4\u10d1\u10d0, \u10e0\u10dd\u10db\u10d4\u10da\u10d8\u10ea \u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10e1 \u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10e8\u10d8, \u10d5\u10d0\u10d9\u10d8\u10e1 \u10de\u10d0\u10e0\u10d9\u10e8\u10d8, \u10d0\u10e0\u10d8\u10e1 \u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10e3\u10e0\u10d8 \u10eb\u10d4\u10d2\u10da\u10d8, \u10e0\u10dd\u10db\u10d4\u10da\u10d8\u10ea \u10d3\u10d0\u10d8\u10d3\u10d2\u10d0 1981 \u10ec\u10d4\u10da\u10e1.",
+        "latitude": "41.706472556197404",
+        "longitude": "44.751548578684634",
+        "sort_order": 100,
+        "other_images": [],
+        "model_urls": [],
+        "project_info": {"\u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10d0": "\u10d5\u10d0\u10d9\u10d8\u10e1 \u10de\u10d0\u10e0\u10d9\u10d8", "\u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d4": "28 \u10db\u10d4\u10e2\u10e0\u10d8", "\u10d0\u10e1\u10d0\u10ee\u10d0\u10d5\u10e1": "\u10d2\u10d0\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10d1\u10d8\u10e1\u10d0 \u10d3\u10d0 \u10e1\u10d0\u10db\u10e8\u10dd\u10d1\u10da\u10dd\u10e1 \u10d2\u10d0\u10db\u10dd\u10e1\u10d0\u10ee\u10e3\u10da\u10d4\u10d1\u10d0\u10e1"},
+        "type_categories": ["\u10eb\u10d4\u10d2\u10da\u10d8"],
+        "period_categories": ["1954-91 \u10ec\u10d4\u10da\u10d8"],
+        "loading_video": "",
+        "loading_audio": ""
+      }
+    ];
+
+    // ===== RENDER PROJECT CARDS =====
+    (function() {
+        var container = document.getElementById('projectsContainer');
+        projectsData.forEach(function(project) {
+            var col = document.createElement('div');
+            col.className = 'project-card clickable-card';
+            col.style.cssText = 'min-width:320px; max-width:340px; flex:0 0 320px; cursor: pointer;';
+            col.setAttribute('data-type-categories', project.type_categories ? project.type_categories.join(',') : '');
+            col.setAttribute('data-period-categories', project.period_categories ? project.period_categories.join(',') : '');
+            col.setAttribute('data-href', 'project.html?id=' + encodeURIComponent(project.id));
+            
+            var imgHtml = project.main_image ? '<img src="' + project.main_image + '" class="card-img-top" alt="' + project.title + '">' : '';
+            col.innerHTML = '<div class="card h-100">' + imgHtml + '<div class="card-body"><h5 class="card-title">' + project.title + '</h5></div></div>';
+            container.appendChild(col);
+        });
+    })();
+
+    // ===== CLICK HANDLERS =====
+    var allProjects = document.querySelectorAll('.project-card');
+    allProjects.forEach(function(card) {
+        card.addEventListener('click', function(e) {
+            var href = this.getAttribute('data-href');
+            if (href) window.location.href = href;
+        });
+        card.addEventListener('auxclick', function(e) {
+            if (e.button === 1) {
+                e.preventDefault();
+                var href = this.getAttribute('data-href');
+                if (href) window.open(href, '_blank');
+            }
+        });
+    });
+
+    // ===== FILTERS =====
+    document.querySelectorAll('.filter-checkbox').forEach(function(cb) { cb.addEventListener('change', applyFilters); });
+    document.getElementById('clearFilters').addEventListener('click', function() {
+        document.querySelectorAll('.filter-checkbox').forEach(function(cb) { cb.checked = false; });
+        applyFilters();
+    });
+    function applyFilters() {
+        var selectedTypes = Array.from(document.querySelectorAll('.filter-checkbox[data-type="type"]:checked')).map(function(cb) { return cb.value; });
+        var selectedPeriods = Array.from(document.querySelectorAll('.filter-checkbox[data-type="period"]:checked')).map(function(cb) { return cb.value; });
+        allProjects = document.querySelectorAll('.project-card');
+        allProjects.forEach(function(project) {
+            var pTypes = project.getAttribute('data-type-categories').split(',').filter(function(t) { return t; });
+            var pPeriods = project.getAttribute('data-period-categories').split(',').filter(function(p) { return p; });
+            var show = true;
+            if (selectedTypes.length > 0) show = show && selectedTypes.some(function(t) { return pTypes.includes(t); });
+            if (selectedPeriods.length > 0) show = show && selectedPeriods.some(function(p) { return pPeriods.includes(p); });
+            project.style.display = show ? 'block' : 'none';
+        });
+    }
+
+    // ===== MOBILE MENU =====
+    var mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    var mainNav = document.getElementById('mainNav');
+    function checkScreenSize() { if (window.innerWidth > 991) mainNav.classList.remove('mobile-menu-open'); }
+    mobileMenuBtn.addEventListener('click', function() { mainNav.classList.toggle('mobile-menu-open'); });
+    document.querySelectorAll('#mainNav a').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            if (this.getAttribute('href').startsWith('#')) {
+                e.preventDefault();
+                var el = document.querySelector(this.getAttribute('href'));
+                if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
+            }
+            mainNav.classList.remove('mobile-menu-open');
+        });
+    });
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    // ===== MAP =====
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            var mapDiv = document.getElementById('map');
+            if (!mapDiv) return;
+            var map = L.map('map').setView([42.0, 43.5], 7);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+            var markers = [];
+            projectsData.forEach(function(p) {
+                if (p.latitude && p.longitude) {
+                    var lat = parseFloat(p.latitude), lng = parseFloat(p.longitude);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        var m = L.marker([lat, lng]).addTo(map);
+                        m.bindPopup('<div style="max-width:200px;"><h6>' + p.title + '</h6><a href="project.html?id=' + encodeURIComponent(p.id) + '" class="btn btn-sm btn-primary">\u10d8\u10ee\u10d8\u10da\u10d4\u10d7 \u10d3\u10d4\u10e2\u10d0\u10da\u10d4\u10d1\u10d8</a></div>');
+                        markers.push([lat, lng]);
+                    }
+                }
+            });
+            if (markers.length > 0) map.fitBounds(markers);
+        } catch (e) { console.error('Map error:', e); }
+    });
+    </script>
+</body>
+</html>
