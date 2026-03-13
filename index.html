@@ -251,118 +251,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    <script>
-    // ===== EMBEDDED PROJECT DATA =====
-    var projectsData = [
-      {
-        "id": "project_7",
-        "title": "\u10d0\u10e1\u10d3\u10d0\u10e1\u10d3",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/6)%20nariyala/4)%20photos/%E1%83%9C%E1%83%90%E1%83%A0%E1%83%98%E1%83%A7%E1%83%90%E1%83%9A%E1%83%90.jpg",
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/6)%20nariyala/1)%203d/nariyala%20cleand%20%20splat/index.html",
-        "description": "\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1",
-        "latitude": "",
-        "longitude": "",
-        "sort_order": 0,
-        "other_images": [],
-        "model_urls": [],
-        "project_info": {},
-        "type_categories": [],
-        "period_categories": [],
-        "loading_video": "",
-        "loading_audio": ""
-      },
-      {
-        "id": "project_6",
-        "title": "\u10e7\u10dd\u10d5\u10da\u10d0\u10d3\u10ec\u10db\u10d8\u10dc\u10d3\u10d0 \u10e6\u10d5\u10d7\u10d8\u10e1\u10db\u10e8\u10dd\u10d1\u10da\u10d8\u10e1 \u10ee\u10d0\u10e0\u10d4\u10d1\u10d8\u10e1 \u10d4\u10d9\u10da\u10d4\u10e1\u10d8\u10d0",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/1)zgvis_eklesia/4)%20photos/gvtismshoblis_eklesia_tbilisis_zgva.jpg",
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/1)zgvis_eklesia/1)3d/Zgvis_eklesia/index.html",
-        "description": "\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1",
-        "latitude": "41.77092041809446",
-        "longitude": "44.81125899309245",
-        "sort_order": 0,
-        "other_images": [],
-        "model_urls": [],
-        "project_info": {"\u10db\u10d8\u10e1\u10d0\u10db\u10d0\u10e0\u10d7\u10d8": "\u10dc\u10e3\u10ea\u10e3\u10d1\u10d8\u10eb\u10d8\u10e1 \u10de\u10da\u10d0\u10e2\u10dd, III \u10db\u10d9/\u10e0.", "\u10d0\u10e0\u10e5\u10d8\u10e2\u10d4\u10e5\u10e2\u10e3\u10e0\u10d0": "\u10ef\u10d5\u10d0\u10e0-\u10d2\u10e3\u10db\u10d1\u10d0\u10d7\u10dd\u10d5\u10d0\u10dc\u10d8"},
-        "type_categories": ["\u10d4\u10d9\u10da\u10d4\u10e1\u10d8\u10d0"],
-        "period_categories": ["1991 + \u10ec\u10d4\u10da\u10d8"],
-        "loading_video": "None",
-        "loading_audio": "None"
-      },
-      {
-        "id": "project_3",
-        "title": "\u10e1\u10d0\u10e5\u10d0\u10e0\u10d7\u10d5\u10d4\u10da\u10dd\u10e1 \u10db\u10d0\u10e2\u10d8\u10d0\u10dc\u10d4",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/3)%20zgvis%20monumenti/4)%20photos/saqartvelos_matiane_tbilisis_zgva.jpg",
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/3)%20zgvis%20monumenti/1)%203d/zgvis%20monumenti/index.html",
-        "description": "\u10e1\u10d0\u10e5\u10d0\u10e0\u10d7\u10d5\u10d4\u10da\u10dd\u10e1 \u10db\u10d0\u10e2\u10d8\u10d0\u10dc\u10d4 \u10e1\u10d0\u10e5\u10d0\u10e0\u10d7\u10d5\u10d4\u10da\u10dd\u10e1 \u10d8\u10e1\u10e2\u10dd\u10e0\u10d8\u10d8\u10e1\u10d0\u10d3\u10db\u10d8 \u10db\u10d8\u10eb\u10e6\u10d5\u10dc\u10d8\u10da\u10d8 \u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10d8\u10d0, \u10e0\u10dd\u10db\u10d4\u10da\u10d8\u10ea \u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10e8\u10d8, \u10dc\u10d0\u10eb\u10d0\u10da\u10d0\u10d3\u10d4\u10d5\u10d8\u10e1 \u10e0\u10d0\u10d8\u10dd\u10dc\u10e8\u10d8, \u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10d8\u10e1 \u10d6\u10e6\u10d5\u10d8\u10e1 \u10db\u10d8\u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4 \u10e2\u10d4\u10e0\u10d8\u10e2\u10dd\u10e0\u10d8\u10d0\u10d6\u10d4, \u10e7\u10d4\u10d4\u10dc\u10d8\u10e1 \u10db\u10d7\u10d0\u10d6\u10d4 \u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10e1.",
-        "latitude": "41.770641473938056",
-        "longitude": "44.81042155064574",
-        "sort_order": 0,
-        "other_images": [],
-        "model_urls": [],
-        "project_info": {"\u10d0\u10d5\u10e2\u10dd\u10e0\u10d8": "\u10d6\u10e3\u10e0\u10d0\u10d1 \u10ec\u10d4\u10e0\u10d4\u10d7\u10d4\u10da\u10d8", "\u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10d8": "\u10d1\u10e0\u10d8\u10dc\u10ef\u10d0\u10dd\u10e8\u10d8 \u10d3\u10d0 \u10e5\u10d5\u10d0\u10e8\u10d8\u10d0 \u10e8\u10d4\u10e1\u10e0\u10e3\u10da\u10d4\u10d1\u10d8", "\u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d4": "35 \u10db\u10d4\u10e2\u10e0\u10d8"},
-        "type_categories": ["\u10eb\u10d4\u10d2\u10da\u10d8"],
-        "period_categories": ["1954-91 \u10ec\u10d4\u10da\u10d8", "1991 + \u10ec\u10d4\u10da\u10d8"],
-        "loading_video": "",
-        "loading_audio": ""
-      },
-      {
-        "id": "-",
-        "title": "\u10d5\u10d0\u10df\u10d0-\u10e4\u10e8\u10d0\u10d5\u10d4\u10da\u10d0",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/4)%20photos/%E1%83%95%E1%83%90%E1%83%90_%E1%83%A4%E1%83%A8%E1%83%90%E1%83%95%E1%83%94%E1%83%9A%E1%83%90.jpg",
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/1)%203d/VAJAS%20dzegli%20V2/index.html",
-        "description": "",
-        "latitude": "41.723851188331594",
-        "longitude": "44.72893462004094",
-        "sort_order": 0,
-        "other_images": [
-          {"url": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/4)%20photos/vaja_fshavela_dzegli.jpg", "caption": "\u10d5\u10d0\u10df\u10d0-\u10e4\u10e8\u10d0\u10d5\u10d4\u10da\u10d0"},
-          {"url": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/4)%20photos/berdzenishvilis%20versia.jpg", "caption": "\u10d1\u10d4\u10e0\u10eb\u10d4\u10dc\u10d8\u10e8\u10d5\u10d8\u10da\u10d8\u10e1 \u10d5\u10d4\u10e0\u10e1\u10d8\u10d0"}
-        ],
-        "model_urls": [],
-        "project_info": {"\u10da\u10e3\u10d9\u10d0 \u10e0\u10d0\u10d6\u10d8\u10d9\u10d0\u10e8\u10d5\u10d8\u10da\u10d8": "\u10d5\u10d0\u10df\u10d0-\u10e4\u10e8\u10d0\u10d5\u10d4\u10da\u10d0"},
-        "type_categories": ["\u10eb\u10d4\u10d2\u10da\u10d8"],
-        "period_categories": ["1954-91 \u10ec\u10d4\u10da\u10d8"],
-        "loading_video": "",
-        "loading_audio": ""
-      },
-      {
-        "id": "project_5",
-        "title": "\u10d0\u10e0\u10e5\u10d4\u10dd\u10da\u10dd\u10d2\u10d8\u10e3\u10e0\u10d8 \u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/5)%20nino%20da%20museumi/4)%20photos/arqeologiis_muzeumi_Archaeological.jpg",
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/5)%20nino%20da%20museumi/1)%203d/nino%2Bmuzeumi%201/index.html",
-        "description": "\u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10e8\u10d8, \u10db\u10d7\u10d8\u10e1 \u10e4\u10d4\u10e0\u10d3\u10dd\u10d1\u10d6\u10d4 \u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4 \u10e7\u10dd\u10e4\u10d8\u10da\u10d8 \u10d0\u10e0\u10e5\u10d4\u10dd\u10da\u10dd\u10d2\u10d8\u10e3\u10e0\u10d8 \u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8 \u10d0\u10e8\u10d4\u10dc\u10d3\u10d0 1988 \u10ec\u10d4\u10da\u10e1 \u10d3\u10d0 \u10d3\u10d0\u10d0\u10de\u10e0\u10dd\u10d4\u10e5\u10e2\u10d0 \u10e8\u10dd\u10d7\u10d0 \u10e7\u10d0\u10d5\u10da\u10d0\u10e8\u10d5\u10d8\u10da\u10d8.",
-        "latitude": "41.76390721156297",
-        "longitude": "44.76669880345213",
-        "sort_order": 0,
-        "other_images": [
-          {"url": "https://pub-e596682234f34e708445409c12658970.r2.dev/5)%20nino%20da%20museumi/4)%20photos/arqeuloggis_muzeumi_wminda_ninos_zdegli.jpg", "caption": "\u10d0\u10e0\u10e5\u10d4\u10dd\u10da\u10dd\u10d2\u10d8\u10e3\u10e0\u10d8 \u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8 \u10d3\u10d0 \u10ec\u10db\u10d8\u10dc\u10d3\u10d0 \u10dc\u10d8\u10dc\u10dd\u10e1 \u10e5\u10d0\u10dc\u10d3\u10d0\u10d9\u10d4\u10d1\u10d0"}
-        ],
-        "model_urls": [],
-        "project_info": {"\u10d3\u10d0\u10d0\u10de\u10e0\u10dd\u10d4\u10e5\u10e2\u10d0": "\u10e8\u10dd\u10d7\u10d0 \u10e7\u10d0\u10d5\u10da\u10d0\u10e8\u10d5\u10d8\u10da\u10d8"},
-        "type_categories": ["\u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8"],
-        "period_categories": ["\u10e5\u10e0\u10d8\u10e1\u10e2\u10d4\u10e8\u10dd\u10d1\u10d0\u10db\u10d3\u10d4", "1954-91 \u10ec\u10d4\u10da\u10d8"],
-        "loading_video": "",
-        "loading_audio": ""
-      },
-      {
-        "id": "project_2",
-        "title": "\u10d2\u10d0\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10d1\u10d8\u10e1 \u10e5\u10d0\u10dc\u10d3\u10d0\u10d9\u10d4\u10d1\u10d0",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/2)%20vakis%20dzegli/4)%20photos/vakis_gamarjvebis_qandakeba.jpg",
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/2)%20vakis%20dzegli/1)%203d/VAKIS%20dzegli/index.html",
-        "description": "\u10d3\u10d8\u10d3\u10d8 \u10e1\u10d0\u10db\u10d0\u10db\u10e3\u10da\u10dd \u10dd\u10db\u10e8\u10d8 \u10d2\u10d0\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10d1\u10d8\u10e1 \u10e5\u10d0\u10dc\u10d3\u10d0\u10d9\u10d4\u10d1\u10d0, \u10e0\u10dd\u10db\u10d4\u10da\u10d8\u10ea \u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10e1 \u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10e8\u10d8, \u10d5\u10d0\u10d9\u10d8\u10e1 \u10de\u10d0\u10e0\u10d9\u10e8\u10d8, \u10d0\u10e0\u10d8\u10e1 \u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10e3\u10e0\u10d8 \u10eb\u10d4\u10d2\u10da\u10d8, \u10e0\u10dd\u10db\u10d4\u10da\u10d8\u10ea \u10d3\u10d0\u10d8\u10d3\u10d2\u10d0 1981 \u10ec\u10d4\u10da\u10e1.",
-        "latitude": "41.706472556197404",
-        "longitude": "44.751548578684634",
-        "sort_order": 100,
-        "other_images": [],
-        "model_urls": [],
-        "project_info": {"\u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10d0": "\u10d5\u10d0\u10d9\u10d8\u10e1 \u10de\u10d0\u10e0\u10d9\u10d8", "\u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d4": "28 \u10db\u10d4\u10e2\u10e0\u10d8", "\u10d0\u10e1\u10d0\u10ee\u10d0\u10d5\u10e1": "\u10d2\u10d0\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10d1\u10d8\u10e1\u10d0 \u10d3\u10d0 \u10e1\u10d0\u10db\u10e8\u10dd\u10d1\u10da\u10dd\u10e1 \u10d2\u10d0\u10db\u10dd\u10e1\u10d0\u10ee\u10e3\u10da\u10d4\u10d1\u10d0\u10e1"},
-        "type_categories": ["\u10eb\u10d4\u10d2\u10da\u10d8"],
-        "period_categories": ["1954-91 \u10ec\u10d4\u10da\u10d8"],
-        "loading_video": "",
-        "loading_audio": ""
-      }
-    ];
+    <!-- All 13 production projects loaded from shared data file -->
+    <script src="projects_data.js"></script>
 
+    <script>
     // ===== RENDER PROJECT CARDS =====
     (function() {
         var container = document.getElementById('projectsContainer');
@@ -373,7 +265,7 @@
             col.setAttribute('data-type-categories', project.type_categories ? project.type_categories.join(',') : '');
             col.setAttribute('data-period-categories', project.period_categories ? project.period_categories.join(',') : '');
             col.setAttribute('data-href', 'project.html?id=' + encodeURIComponent(project.id));
-            
+
             var imgHtml = project.main_image ? '<img src="' + project.main_image + '" class="card-img-top" alt="' + project.title + '">' : '';
             col.innerHTML = '<div class="card h-100">' + imgHtml + '<div class="card-body"><h5 class="card-title">' + project.title + '</h5></div></div>';
             container.appendChild(col);
@@ -449,7 +341,7 @@
                     var lat = parseFloat(p.latitude), lng = parseFloat(p.longitude);
                     if (!isNaN(lat) && !isNaN(lng)) {
                         var m = L.marker([lat, lng]).addTo(map);
-                        m.bindPopup('<div style="max-width:200px;"><h6>' + p.title + '</h6><a href="project.html?id=' + encodeURIComponent(p.id) + '" class="btn btn-sm btn-primary">\u10d8\u10ee\u10d8\u10da\u10d4\u10d7 \u10d3\u10d4\u10e2\u10d0\u10da\u10d4\u10d1\u10d8</a></div>');
+                        m.bindPopup('<div style="max-width:200px;"><h6>' + p.title + '</h6><a href="project.html?id=' + encodeURIComponent(p.id) + '" class="btn btn-sm btn-primary">იხილეთ დეტალები</a></div>');
                         markers.push([lat, lng]);
                     }
                 }

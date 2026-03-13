@@ -90,97 +90,17 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
 
-    <script>
-    // ===== ALL PROJECTS DATA =====
-    var allProjects = [
-      {
-        "id": "project_7",
-        "title": "\u10d0\u10e1\u10d3\u10d0\u10e1\u10d3",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/6)%20nariyala/4)%20photos/%E1%83%9C%E1%83%90%E1%83%A0%E1%83%98%E1%83%A7%E1%83%90%E1%83%9A%E1%83%90.jpg",
-        "main_image_caption": null,
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/6)%20nariyala/1)%203d/nariyala%20cleand%20%20splat/index.html",
-        "description": "\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1",
-        "latitude": "", "longitude": "",
-        "other_images": [], "model_urls": [],
-        "project_info": {},
-        "loading_video": "", "loading_audio": ""
-      },
-      {
-        "id": "project_6",
-        "title": "\u10e7\u10dd\u10d5\u10da\u10d0\u10d3\u10ec\u10db\u10d8\u10dc\u10d3\u10d0 \u10e6\u10d5\u10d7\u10d8\u10e1\u10db\u10e8\u10dd\u10d1\u10da\u10d8\u10e1 \u10ee\u10d0\u10e0\u10d4\u10d1\u10d8\u10e1 \u10d4\u10d9\u10da\u10d4\u10e1\u10d8\u10d0",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/1)zgvis_eklesia/4)%20photos/gvtismshoblis_eklesia_tbilisis_zgva.jpg",
-        "main_image_caption": null,
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/1)zgvis_eklesia/1)3d/Zgvis_eklesia/index.html",
-        "description": "\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1\u10d1",
-        "latitude": "41.77092041809446", "longitude": "44.81125899309245",
-        "other_images": [], "model_urls": [],
-        "project_info": {"\u10db\u10d8\u10e1\u10d0\u10db\u10d0\u10e0\u10d7\u10d8": "\u10dc\u10e3\u10ea\u10e3\u10d1\u10d8\u10eb\u10d8\u10e1 \u10de\u10da\u10d0\u10e2\u10dd, III \u10db\u10d9/\u10e0.", "\u10d0\u10e0\u10e5\u10d8\u10e2\u10d4\u10e5\u10e2\u10e3\u10e0\u10d0": "\u10ef\u10d5\u10d0\u10e0-\u10d2\u10e3\u10db\u10d1\u10d0\u10d7\u10dd\u10d5\u10d0\u10dc\u10d8"},
-        "loading_video": "None", "loading_audio": "None"
-      },
-      {
-        "id": "project_3",
-        "title": "\u10e1\u10d0\u10e5\u10d0\u10e0\u10d7\u10d5\u10d4\u10da\u10dd\u10e1 \u10db\u10d0\u10e2\u10d8\u10d0\u10dc\u10d4",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/3)%20zgvis%20monumenti/4)%20photos/saqartvelos_matiane_tbilisis_zgva.jpg",
-        "main_image_caption": null,
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/3)%20zgvis%20monumenti/1)%203d/zgvis%20monumenti/index.html",
-        "description": "\u10e1\u10d0\u10e5\u10d0\u10e0\u10d7\u10d5\u10d4\u10da\u10dd\u10e1 \u10db\u10d0\u10e2\u10d8\u10d0\u10dc\u10d4 \u10e1\u10d0\u10e5\u10d0\u10e0\u10d7\u10d5\u10d4\u10da\u10dd\u10e1 \u10d8\u10e1\u10e2\u10dd\u10e0\u10d8\u10d8\u10e1\u10d0\u10d3\u10db\u10d8 \u10db\u10d8\u10eb\u10e6\u10d5\u10dc\u10d8\u10da\u10d8 \u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10d8\u10d0, \u10e0\u10dd\u10db\u10d4\u10da\u10d8\u10ea \u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10e8\u10d8, \u10dc\u10d0\u10eb\u10d0\u10da\u10d0\u10d3\u10d4\u10d5\u10d8\u10e1 \u10e0\u10d0\u10d8\u10dd\u10dc\u10e8\u10d8, \u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10d8\u10e1 \u10d6\u10e6\u10d5\u10d8\u10e1 \u10db\u10d8\u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4 \u10e2\u10d4\u10e0\u10d8\u10e2\u10dd\u10e0\u10d8\u10d0\u10d6\u10d4, \u10e7\u10d4\u10d4\u10dc\u10d8\u10e1 \u10db\u10d7\u10d0\u10d6\u10d4 \u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10e1.\n\n\u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10d8\u10e1 \u10db\u10e8\u10d4\u10dc\u10d4\u10d1\u10da\u10dd\u10d1\u10d0 1980-\u10d8\u10d0\u10dc \u10ec\u10da\u10d4\u10d1\u10e8\u10d8 \u10d3\u10d0\u10d8\u10ec\u10e7\u10dd \u10d3\u10d0 \u10d0\u10d5\u10e2\u10dd\u10e0\u10d8 \u10e1\u10d9\u10e3\u10da\u10de\u10e2\u10dd\u10e0\u10d8 \u10d6\u10e3\u10e0\u10d0\u10d1 \u10ec\u10d4\u10e0\u10d4\u10d7\u10d4\u10da\u10d8\u10d0. \u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10d8 \u10d1\u10e0\u10d8\u10dc\u10ef\u10d0\u10dd\u10e8\u10d8 \u10d3\u10d0 \u10e5\u10d5\u10d0\u10e8\u10d8\u10d0 \u10e8\u10d4\u10e1\u10e0\u10e3\u10da\u10d4\u10d1\u10d8 \u10d3\u10d0 12 \u10f0\u10d4\u10e5\u10e2\u10d0\u10e0 \u10db\u10d8\u10ec\u10d8\u10e1 \u10e4\u10d0\u10e0\u10d7\u10dd\u10d1\u10d6\u10d4\u10d0 \u10d2\u10d0\u10dc\u10d7\u10d0\u10d5\u10e1\u10d4\u10d1\u10e3\u10da\u10d8. \u10e2\u10d4\u10e0\u10d8\u10e2\u10dd\u10e0\u10d8\u10d0\u10d6\u10d4 \u10d0\u10e6\u10db\u10d0\u10e0\u10d7\u10e3\u10da\u10d8\u10d0 35 \u10db\u10d4\u10e2\u10e0\u10d8\u10e1 \u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d8\u10e1 16 \u10e1\u10d5\u10d4\u10e2\u10d8.",
-        "latitude": "41.770641473938056", "longitude": "44.81042155064574",
-        "other_images": [], "model_urls": [],
-        "project_info": {"\u10d0\u10d5\u10e2\u10dd\u10e0\u10d8": "\u10d6\u10e3\u10e0\u10d0\u10d1 \u10ec\u10d4\u10e0\u10d4\u10d7\u10d4\u10da\u10d8", "\u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10d8": "\u10d1\u10e0\u10d8\u10dc\u10ef\u10d0\u10dd\u10e8\u10d8 \u10d3\u10d0 \u10e5\u10d5\u10d0\u10e8\u10d8\u10d0 \u10e8\u10d4\u10e1\u10e0\u10e3\u10da\u10d4\u10d1\u10d8", "\u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d4": "35 \u10db\u10d4\u10e2\u10e0\u10d8"},
-        "loading_video": "", "loading_audio": ""
-      },
-      {
-        "id": "-",
-        "title": "\u10d5\u10d0\u10df\u10d0-\u10e4\u10e8\u10d0\u10d5\u10d4\u10da\u10d0",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/4)%20photos/%E1%83%95%E1%83%90%E1%83%90_%E1%83%A4%E1%83%A8%E1%83%90%E1%83%95%E1%83%94%E1%83%9A%E1%83%90.jpg",
-        "main_image_caption": null,
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/1)%203d/VAJAS%20dzegli%20V2/index.html",
-        "description": "",
-        "latitude": "41.723851188331594", "longitude": "44.72893462004094",
-        "other_images": [
-          {"url": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/4)%20photos/vaja_fshavela_dzegli.jpg", "caption": "\u10d5\u10d0\u10df\u10d0-\u10e4\u10e8\u10d0\u10d5\u10d4\u10da\u10d0"},
-          {"url": "https://pub-e596682234f34e708445409c12658970.r2.dev/4)%20vajas%20dzegli/4)%20photos/berdzenishvilis%20versia.jpg", "caption": "\u10d1\u10d4\u10e0\u10eb\u10d4\u10dc\u10d8\u10e8\u10d5\u10d8\u10da\u10d8\u10e1 \u10d5\u10d4\u10e0\u10e1\u10d8\u10d0"}
-        ],
-        "model_urls": [],
-        "project_info": {"\u10da\u10e3\u10d9\u10d0 \u10e0\u10d0\u10d6\u10d8\u10d9\u10d0\u10e8\u10d5\u10d8\u10da\u10d8": "\u10d5\u10d0\u10df\u10d0-\u10e4\u10e8\u10d0\u10d5\u10d4\u10da\u10d0"},
-        "loading_video": "", "loading_audio": ""
-      },
-      {
-        "id": "project_5",
-        "title": "\u10d0\u10e0\u10e5\u10d4\u10dd\u10da\u10dd\u10d2\u10d8\u10e3\u10e0\u10d8 \u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/5)%20nino%20da%20museumi/4)%20photos/arqeologiis_muzeumi_Archaeological.jpg",
-        "main_image_caption": null,
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/5)%20nino%20da%20museumi/1)%203d/nino%2Bmuzeumi%201/index.html",
-        "description": "\u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10e8\u10d8, \u10db\u10d7\u10d8\u10e1 \u10e4\u10d4\u10e0\u10d3\u10dd\u10d1\u10d6\u10d4 \u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4 \u10e7\u10dd\u10e4\u10d8\u10da\u10d8 \u10d0\u10e0\u10e5\u10d4\u10dd\u10da\u10dd\u10d2\u10d8\u10e3\u10e0\u10d8 \u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8 \u10d0\u10e8\u10d4\u10dc\u10d3\u10d0 1988 \u10ec\u10d4\u10da\u10e1 \u10d3\u10d0 \u10d3\u10d0\u10d0\u10de\u10e0\u10dd\u10d4\u10e5\u10e2\u10d0 \u10e8\u10dd\u10d7\u10d0 \u10e7\u10d0\u10d5\u10da\u10d0\u10e8\u10d5\u10d8\u10da\u10d8. \u10da\u10dd\u10d9\u10d0\u10ea\u10d8\u10d0 \u10e8\u10d4\u10db\u10d7\u10ee\u10d5\u10d4\u10d5\u10d8\u10d7 \u10d0\u10e0 \u10d0\u10e0\u10d8\u10e1 \u10e8\u10d4\u10e0\u10e9\u10d4\u10e3\u10da\u10d8: \u10d8\u10e5\u10d5\u10d4 \u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10e1 \u10e3\u10eb\u10d5\u10d4\u10da\u10d4\u10e1\u10d8 \u10e2\u10e0\u10d4\u10da\u10d0\u10e1 \u10e1\u10d0\u10db\u10d0\u10e0\u10ee\u10d8.",
-        "latitude": "41.76390721156297", "longitude": "44.76669880345213",
-        "other_images": [
-          {"url": "https://pub-e596682234f34e708445409c12658970.r2.dev/5)%20nino%20da%20museumi/4)%20photos/arqeuloggis_muzeumi_wminda_ninos_zdegli.jpg", "caption": "\u10d0\u10e0\u10e5\u10d4\u10dd\u10da\u10dd\u10d2\u10d8\u10e3\u10e0\u10d8 \u10db\u10e3\u10d6\u10d4\u10e3\u10db\u10d8 \u10d3\u10d0 \u10ec\u10db\u10d8\u10dc\u10d3\u10d0 \u10dc\u10d8\u10dc\u10dd\u10e1 \u10e5\u10d0\u10dc\u10d3\u10d0\u10d9\u10d4\u10d1\u10d0"}
-        ],
-        "model_urls": [],
-        "project_info": {"\u10d3\u10d0\u10d0\u10de\u10e0\u10dd\u10d4\u10e5\u10e2\u10d0": "\u10e8\u10dd\u10d7\u10d0 \u10e7\u10d0\u10d5\u10da\u10d0\u10e8\u10d5\u10d8\u10da\u10d8"},
-        "loading_video": "", "loading_audio": ""
-      },
-      {
-        "id": "project_2",
-        "title": "\u10d2\u10d0\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10d1\u10d8\u10e1 \u10e5\u10d0\u10dc\u10d3\u10d0\u10d9\u10d4\u10d1\u10d0",
-        "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/2)%20vakis%20dzegli/4)%20photos/vakis_gamarjvebis_qandakeba.jpg",
-        "main_image_caption": null,
-        "viewer3D": "https://pub-e596682234f34e708445409c12658970.r2.dev/2)%20vakis%20dzegli/1)%203d/VAKIS%20dzegli/index.html",
-        "description": "\u10d3\u10d8\u10d3\u10d8 \u10e1\u10d0\u10db\u10d0\u10db\u10e3\u10da\u10dd \u10dd\u10db\u10e8\u10d8 \u10d2\u10d0\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10d1\u10d8\u10e1 \u10e5\u10d0\u10dc\u10d3\u10d0\u10d9\u10d4\u10d1\u10d0, \u10e0\u10dd\u10db\u10d4\u10da\u10d8\u10ea \u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10e1 \u10d7\u10d1\u10d8\u10da\u10d8\u10e1\u10e8\u10d8, \u10d5\u10d0\u10d9\u10d8\u10e1 \u10de\u10d0\u10e0\u10d9\u10e8\u10d8, \u10d0\u10e0\u10d8\u10e1 \u10db\u10dd\u10dc\u10e3\u10db\u10d4\u10dc\u10e2\u10e3\u10e0\u10d8 \u10eb\u10d4\u10d2\u10da\u10d8, \u10e0\u10dd\u10db\u10d4\u10da\u10d8\u10ea \u10d3\u10d0\u10d8\u10d3\u10d2\u10d0 1981 \u10ec\u10d4\u10da\u10e1. 28 \u10db\u10d4\u10e2\u10e0\u10d8\u10e1 \u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d8\u10d7 \u10e5\u10d0\u10dc\u10d3\u10d0\u10d9\u10d4\u10d1\u10d0 \u10d0\u10e1\u10d0\u10ee\u10d0\u10d5\u10e1 \u10d2\u10d0\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10d1\u10d8\u10e1\u10d0 \u10d3\u10d0 \u10e1\u10d0\u10db\u10e8\u10dd\u10d1\u10da\u10dd\u10e1 \u10d2\u10d0\u10db\u10dd\u10e1\u10d0\u10ee\u10e3\u10da\u10d4\u10d1\u10d0\u10e1.",
-        "latitude": "41.706472556197404", "longitude": "44.751548578684634",
-        "other_images": [], "model_urls": [],
-        "project_info": {"\u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10d0": "\u10d5\u10d0\u10d9\u10d8\u10e1 \u10de\u10d0\u10e0\u10d9\u10d8", "\u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d4": "28 \u10db\u10d4\u10e2\u10e0\u10d8", "\u10d0\u10e1\u10d0\u10ee\u10d0\u10d5\u10e1": "\u10d2\u10d0\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10d1\u10d8\u10e1\u10d0 \u10d3\u10d0 \u10e1\u10d0\u10db\u10e8\u10dd\u10d1\u10da\u10dd\u10e1 \u10d2\u10d0\u10db\u10dd\u10e1\u10d0\u10ee\u10e3\u10da\u10d4\u10d1\u10d0\u10e1"},
-        "loading_video": "", "loading_audio": ""
-      }
-    ];
+    <!-- All 13 production projects loaded from shared data file -->
+    <script src="projects_data.js"></script>
 
+    <script>
     // ===== FIND PROJECT BY ID =====
     var urlParams = new URLSearchParams(window.location.search);
     var projectId = urlParams.get('id');
-    var project = allProjects.find(function(p) { return p.id === projectId; });
+    var project = projectsData.find(function(p) { return p.id === projectId; });
 
     if (!project) {
-        document.getElementById('projectPage').innerHTML = '<div class="text-center py-5"><h2>\u10de\u10e0\u10dd\u10d4\u10e5\u10e2\u10d8 \u10d5\u10d4\u10e0 \u10db\u10dd\u10d8\u10eb\u10d4\u10d1\u10dc\u10d0</h2><a href="index.html" class="btn btn-primary mt-3">\u10db\u10d7\u10d0\u10d5\u10d0\u10e0 \u10d2\u10d5\u10d4\u10e0\u10d3\u10d6\u10d4</a></div>';
+        document.getElementById('projectPage').innerHTML = '<div class="text-center py-5"><h2>პროექტი ვერ მოიძებნა</h2><a href="index.html" class="btn btn-primary mt-3">მთავარ გვერდზე</a></div>';
     } else {
         document.title = project.title + ' - Georgian Heritage Portfolio';
         renderProject(project);
@@ -188,47 +108,51 @@
 
     function renderProject(p) {
         var html = '';
-        
+
         // Title
         html += '<h1 class="project-title">' + p.title + '</h1>';
-        
+
         // 3D Viewer
         if (p.viewer3D) {
             html += '<div class="viewer-wrap">';
             html += '<div id="loadingContainer" class="loading-container">';
-            
+
             if (p.loading_video && p.loading_video !== '' && p.loading_video !== 'None') {
                 html += '<video id="loadingVideo" class="loading-video" autoplay muted loop><source src="' + p.loading_video + '" type="video/mp4"></video>';
             }
-            
+
             html += '<div class="loading-overlay">';
-            html += '<div class="loading-text" id="loadingText">3D \u10db\u10dd\u10d3\u10d4\u10da\u10d8 \u10d8\u10e2\u10d5\u10d8\u10e0\u10d7\u10d4\u10d1\u10d0...</div>';
+            html += '<div class="loading-text" id="loadingText">3D მოდელი იტვირთება...</div>';
             html += '<div class="loading-spinner"></div>';
-            html += '<div style="margin-top:15px;font-size:0.9rem;opacity:0.8;" id="loadingStatus">\u10db\u10dd\u10d3\u10d4\u10da\u10d8 \u10d8\u10e2\u10d5\u10d8\u10e0\u10d7\u10d4\u10d1\u10d0...</div>';
-            html += '<div style="margin-top:20px;font-size:0.8rem;opacity:0.7;color:#fff;">\ud83d\udca1 3D \u10db\u10dd\u10d3\u10d4\u10da\u10d8\u10e1 \u10dc\u10d0\u10ee\u10d5\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1 \u10d3\u10d0\u10d0\u10ed\u10d8\u10e0\u10d4\u10d7 \u10d4\u10d9\u10e0\u10d0\u10dc\u10d6\u10d4 \u10d0\u10dc \u10db\u10dd\u10d8\u10ea\u10d0\u10d3\u10d4\u10d7 30 \u10ec\u10d0\u10db\u10d8</div>';
+            html += '<div style="margin-top:15px;font-size:0.9rem;opacity:0.8;" id="loadingStatus">მოდელი იტვირთება...</div>';
+            html += '<div style="margin-top:20px;font-size:0.8rem;opacity:0.7;color:#fff;">💡 3D მოდელის ნახვისთვის დააჭირეთ ეკრანზე ან მოიცადეთ 30 წამი</div>';
             html += '</div></div>';
-            
+
             html += '<div id="viewer3D" class="hidden">';
             if (p.viewer3D.charAt(0) === '<') {
+                // iframe HTML directly embedded (e.g. superspl.at)
                 html += p.viewer3D;
             } else {
                 html += '<iframe src="' + p.viewer3D + '" class="viewer-iframe" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="xr-spatial-tracking; gyroscope; accelerometer"></iframe>';
             }
             html += '</div></div>';
         }
-        
+
         // Map
         if (p.latitude && p.longitude) {
-            html += '<h4>\u10d0\u10d3\u10d2\u10d8\u10da\u10db\u10d3\u10d4\u10d1\u10d0\u10e0\u10d4\u10dd\u10d1\u10d0 \u10e0\u10e3\u10d9\u10d0\u10d6\u10d4</h4>';
+            html += '<h4>ადგილმდებარეობა რუკაზე</h4>';
             html += '<div id="map" style="height:350px; margin-bottom:20px;"></div>';
         }
-        
+
         // Description + Info
         html += '<div class="row" id="projectContent">';
-        html += '<div class="col-md-8" id="descriptionCol"><h4>\u10d0\u10e6\u10ec\u10d4\u10e0\u10d0</h4>';
-        html += '<div class="project-description">' + (p.description || '') + '</div></div>';
-        
-        html += '<div class="col-md-4" id="infoCol"><div class="card"><div class="card-header"><h5>\u10de\u10e0\u10dd\u10d4\u10e5\u10e2\u10d8\u10e1 \u10d8\u10dc\u10e4\u10dd\u10e0\u10db\u10d0\u10ea\u10d8\u10d0</h5></div><div class="card-body">';
+        html += '<div class="col-md-8" id="descriptionCol"><h4>აღწერა</h4>';
+        var desc = p.description || '';
+        // Convert \r\n to <br> for proper display
+        desc = desc.replace(/\r\n/g, '<br>').replace(/\n/g, '<br>');
+        html += '<div class="project-description">' + desc + '</div></div>';
+
+        html += '<div class="col-md-4" id="infoCol"><div class="card"><div class="card-header"><h5>პროექტის ინფორმაცია</h5></div><div class="card-body">';
         if (p.project_info && Object.keys(p.project_info).length > 0) {
             for (var key in p.project_info) {
                 if (p.project_info[key]) {
@@ -236,40 +160,40 @@
                 }
             }
         } else {
-            html += '<p class="text-muted">\u10d8\u10dc\u10e4\u10dd\u10e0\u10db\u10d0\u10ea\u10d8\u10d0 \u10d0\u10e0 \u10d0\u10e0\u10d8\u10e1 \u10db\u10d8\u10d7\u10d8\u10d7\u10d4\u10d1\u10e3\u10da\u10d8</p>';
+            html += '<p class="text-muted">ინფორმაცია არ არის მითითებული</p>';
         }
         html += '</div></div></div></div>';
-        
+
         // Images
         var hasImages = p.main_image || (p.other_images && p.other_images.length > 0);
         if (hasImages) {
-            html += '<h4>\u10e1\u10e3\u10e0\u10d0\u10d7\u10d4\u10d1\u10d8</h4><div class="row">';
+            html += '<h4>სურათები</h4><div class="row">';
             if (p.main_image) {
-                var caption = p.main_image_caption || '\u10db\u10d7\u10d0\u10d5\u10d0\u10e0\u10d8 \u10e1\u10e3\u10e0\u10d0\u10d7\u10d8';
+                var caption = p.main_image_caption || 'მთავარი სურათი';
                 html += '<div class="col-md-3 mb-2"><a href="' + p.main_image + '" class="glightbox" data-gallery="gallery1" data-title="' + caption + '"><img src="' + p.main_image + '" class="img-thumbnail" alt="' + caption + '"></a><div class="text-center small text-muted mt-1">' + caption + '</div></div>';
             }
             if (p.other_images) {
                 p.other_images.forEach(function(img) {
                     if (img.url) {
-                        html += '<div class="col-md-3 mb-2"><a href="' + img.url + '" class="glightbox" data-gallery="gallery1" data-title="' + (img.caption || '') + '"><img src="' + img.url + '" class="img-thumbnail" alt="\u10e1\u10e3\u10e0\u10d0\u10d7\u10d8"></a><div class="text-center small text-muted mt-1">' + (img.caption || '') + '</div></div>';
+                        html += '<div class="col-md-3 mb-2"><a href="' + img.url + '" class="glightbox" data-gallery="gallery1" data-title="' + (img.caption || '') + '"><img src="' + img.url + '" class="img-thumbnail" alt="სურათი"></a><div class="text-center small text-muted mt-1">' + (img.caption || '') + '</div></div>';
                     }
                 });
             }
             html += '</div>';
         }
-        
+
         document.getElementById('projectPage').innerHTML = html;
-        
+
         // Initialize GLightbox
         if (typeof GLightbox !== 'undefined') {
             GLightbox({ selector: '.glightbox' });
         }
-        
+
         // Initialize 3D viewer loading
         if (p.viewer3D) {
             initViewer();
         }
-        
+
         // Initialize map
         if (p.latitude && p.longitude) {
             initProjectMap(p);
@@ -280,7 +204,7 @@
         var loadingContainer = document.getElementById('loadingContainer');
         var viewer3D = document.getElementById('viewer3D');
         if (!loadingContainer || !viewer3D) return;
-        
+
         function showViewer() {
             loadingContainer.classList.add('hidden');
             viewer3D.classList.remove('hidden');
@@ -289,7 +213,7 @@
             var audio = document.getElementById('loadingAudio');
             if (audio) audio.pause();
         }
-        
+
         loadingContainer.addEventListener('click', showViewer);
         setTimeout(showViewer, 30000);
     }
@@ -299,7 +223,7 @@
             var lat = parseFloat(p.latitude);
             var lng = parseFloat(p.longitude);
             if (isNaN(lat) || isNaN(lng)) return;
-            
+
             var map = L.map('map').setView([lat, lng], 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
