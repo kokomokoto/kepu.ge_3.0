@@ -174,8 +174,12 @@
             }
             if (p.other_images) {
                 p.other_images.forEach(function(img) {
-                    if (img.url) {
-                        html += '<div class="col-md-3 mb-2"><a href="' + img.url + '" class="glightbox" data-gallery="gallery1" data-title="' + (img.caption || '') + '"><img src="' + img.url + '" class="img-thumbnail" alt="სურათი"></a><div class="text-center small text-muted mt-1">' + (img.caption || '') + '</div></div>';
+                    var url = (img && img.url) ? img.url : (typeof img === 'string' ? img : '');
+                    var cap = (img && img.caption) ? img.caption : '';
+                    if (url) {
+                        html += '<div class="col-md-3 mb-2"><a href="' + url + '" class="glightbox" data-gallery="gallery1" data-title="' + cap + '"><img src="' + url + '" class="img-thumbnail" alt="სურათი"></a>';
+                        if (cap) html += '<div class="text-center small text-muted mt-1">' + cap + '</div>';
+                        html += '</div>';
                     }
                 });
             }
