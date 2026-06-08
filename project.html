@@ -127,16 +127,16 @@
             if (hasLoadingMedia) {
                 html += '<div id="loadingContainer" class="loading-container">';
                 if (hasVideo) {
-                    html += '<video id="loadingVideo" class="loading-video" autoplay muted loop playsinline><source src="' + p.loading_video + '" type="video/mp4"></video>';
+                    html += '<video id="loadingVideo" class="loading-video" autoplay muted playsinline><source src="' + p.loading_video + '" type="video/mp4"></video>';
                 }
                 if (hasAudio) {
-                    html += '<audio id="loadingAudio" autoplay muted loop preload="auto"><source src="' + p.loading_audio + '" type="audio/mpeg"></audio>';
+                    html += '<audio id="loadingAudio" autoplay muted preload="auto"><source src="' + p.loading_audio + '" type="audio/mpeg"></audio>';
                 }
                 html += '<div class="loading-overlay">';
                 html += '<div class="loading-text" id="loadingText">3D მოდელი იტვირთება...</div>';
                 html += '<div class="loading-spinner"></div>';
                 html += '<div style="margin-top:15px;font-size:0.9rem;opacity:0.8;" id="loadingStatus">მოდელი იტვირთება...</div>';
-                html += '<div style="margin-top:20px;font-size:0.8rem;opacity:0.7;color:#fff;">💡 3D მოდელის ნახვისთვის დააჭირეთ ეკრანზე ან მოიცადეთ 30 წამი</div>';
+                html += '<div style="margin-top:20px;font-size:0.8rem;opacity:0.7;color:#fff;">💡 3D მოდელის ნახვისთვის დააჭირეთ ეკრანზე, ან მოიცადეთ მუსიკის დასრულება</div>';
                 html += '</div></div>';
             }
 
@@ -223,6 +223,7 @@
 
         var loadingAudio = document.getElementById('loadingAudio');
         var loadingVideo = document.getElementById('loadingVideo');
+        var MAX_WAIT_MS = 120000;
         var mediaStopTimeout = null;
         var mediaAlreadyStopped = false;
         var audioStarted = false;
@@ -272,7 +273,25 @@
         document.addEventListener('touchstart', tryStartAudio, { once: true });
         setTimeout(tryStartAudio, 100);
 
-        mediaStopTimeout = setTimeout(showViewer, 30000);
+        if (loadingVideo) {
+            loadingVideo.loop = false;
+            loadingVideo.addEventListener('ended', function() {
+                if (mediaAlreadyStopped) return;
+                if (loadingAudio && !loadingAudio.ended) {
+                    loadingVideo.currentTime = 0;
+                    loadingVideo.play().catch(function() {});
+                } else if (!loadingAudio) {
+                    showViewer();
+                }
+            });
+        }
+
+        if (loadingAudio) {
+            loadingAudio.loop = false;
+            loadingAudio.addEventListener('ended', showViewer);
+        }
+
+        mediaStopTimeout = setTimeout(showViewer, MAX_WAIT_MS);
     }
 
     function initProjectMap(p) {
