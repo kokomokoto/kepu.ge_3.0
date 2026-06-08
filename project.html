@@ -106,6 +106,10 @@
         renderProject(project);
     }
 
+    function hasMediaUrl(url) {
+        return url && url !== '' && url !== 'None' && url !== 'null';
+    }
+
     function renderProject(p) {
         var html = '';
 
@@ -114,23 +118,30 @@
 
         // 3D Viewer
         if (p.viewer3D) {
-            html += '<div class="viewer-wrap">';
-            html += '<div id="loadingContainer" class="loading-container">';
+            var hasVideo = hasMediaUrl(p.loading_video);
+            var hasAudio = hasMediaUrl(p.loading_audio);
+            var hasLoadingMedia = hasVideo || hasAudio;
 
-            if (p.loading_video && p.loading_video !== '' && p.loading_video !== 'None') {
-                html += '<video id="loadingVideo" class="loading-video" autoplay muted loop><source src="' + p.loading_video + '" type="video/mp4"></video>';
+            html += '<div class="viewer-wrap">';
+
+            if (hasLoadingMedia) {
+                html += '<div id="loadingContainer" class="loading-container">';
+                if (hasVideo) {
+                    html += '<video id="loadingVideo" class="loading-video" autoplay muted loop playsinline><source src="' + p.loading_video + '" type="video/mp4"></video>';
+                }
+                if (hasAudio) {
+                    html += '<audio id="loadingAudio" autoplay muted loop preload="auto"><source src="' + p.loading_audio + '" type="audio/mpeg"></audio>';
+                }
+                html += '<div class="loading-overlay">';
+                html += '<div class="loading-text" id="loadingText">3D მოდელი იტვირთება...</div>';
+                html += '<div class="loading-spinner"></div>';
+                html += '<div style="margin-top:15px;font-size:0.9rem;opacity:0.8;" id="loadingStatus">მოდელი იტვირთება...</div>';
+                html += '<div style="margin-top:20px;font-size:0.8rem;opacity:0.7;color:#fff;">💡 3D მოდელის ნახვისთვის დააჭირეთ ეკრანზე ან მოიცადეთ 30 წამი</div>';
+                html += '</div></div>';
             }
 
-            html += '<div class="loading-overlay">';
-            html += '<div class="loading-text" id="loadingText">3D მოდელი იტვირთება...</div>';
-            html += '<div class="loading-spinner"></div>';
-            html += '<div style="margin-top:15px;font-size:0.9rem;opacity:0.8;" id="loadingStatus">მოდელი იტვირთება...</div>';
-            html += '<div style="margin-top:20px;font-size:0.8rem;opacity:0.7;color:#fff;">💡 3D მოდელის ნახვისთვის დააჭირეთ ეკრანზე ან მოიცადეთ 30 წამი</div>';
-            html += '</div></div>';
-
-            html += '<div id="viewer3D" class="hidden">';
+            html += '<div id="viewer3D"' + (hasLoadingMedia ? ' class="hidden"' : '') + '>';
             if (p.viewer3D.charAt(0) === '<') {
-                // iframe HTML directly embedded (e.g. superspl.at)
                 html += p.viewer3D;
             } else {
                 html += '<iframe src="' + p.viewer3D + '" class="viewer-iframe" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="xr-spatial-tracking; gyroscope; accelerometer"></iframe>';
@@ -207,19 +218,61 @@
     function initViewer() {
         var loadingContainer = document.getElementById('loadingContainer');
         var viewer3D = document.getElementById('viewer3D');
-        if (!loadingContainer || !viewer3D) return;
+        if (!viewer3D) return;
+        if (!loadingContainer) return;
 
-        function showViewer() {
-            loadingContainer.classList.add('hidden');
-            viewer3D.classList.remove('hidden');
-            var video = document.getElementById('loadingVideo');
-            if (video) video.pause();
-            var audio = document.getElementById('loadingAudio');
-            if (audio) audio.pause();
+        var loadingAudio = document.getElementById('loadingAudio');
+        var loadingVideo = document.getElementById('loadingVideo');
+        var mediaStopTimeout = null;
+        var mediaAlreadyStopped = false;
+        var audioStarted = false;
+
+        function tryStartAudio() {
+            if (audioStarted || !loadingAudio) return;
+            loadingAudio.muted = false;
+            loadingAudio.volume = 1;
+            loadingAudio.play().then(function() {
+                audioStarted = true;
+            }).catch(function() {
+                loadingAudio.muted = true;
+            });
         }
 
-        loadingContainer.addEventListener('click', showViewer);
-        setTimeout(showViewer, 30000);
+        function showViewer() {
+            if (mediaAlreadyStopped) return;
+            mediaAlreadyStopped = true;
+            if (mediaStopTimeout) {
+                clearTimeout(mediaStopTimeout);
+                mediaStopTimeout = null;
+            }
+            if (loadingAudio) {
+                loadingAudio.pause();
+                loadingAudio.currentTime = 0;
+            }
+            if (loadingVideo) {
+                loadingVideo.pause();
+                loadingVideo.currentTime = 0;
+            }
+            loadingContainer.style.display = 'none';
+            loadingContainer.classList.add('hidden');
+            viewer3D.style.display = 'block';
+            viewer3D.classList.remove('hidden');
+        }
+
+        viewer3D.style.display = 'none';
+        loadingContainer.style.cursor = 'pointer';
+        loadingContainer.title = '3D მოდელის ნახვისთვის დააჭირეთ';
+
+        loadingContainer.addEventListener('click', function() {
+            tryStartAudio();
+            setTimeout(showViewer, 100);
+        });
+
+        document.addEventListener('click', tryStartAudio, { once: true });
+        document.addEventListener('touchstart', tryStartAudio, { once: true });
+        setTimeout(tryStartAudio, 100);
+
+        mediaStopTimeout = setTimeout(showViewer, 30000);
     }
 
     function initProjectMap(p) {
