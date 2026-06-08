@@ -88,18 +88,6 @@
     <script src="projects_data.js"></script>
 
     <script>
-    // ===== FIND PROJECT BY ID =====
-    var urlParams = new URLSearchParams(window.location.search);
-    var projectId = urlParams.get('id');
-    var project = projectsData.find(function(p) { return p.id === projectId; });
-
-    if (!project) {
-        document.getElementById('projectPage').innerHTML = '<div class="text-center py-5"><h2>პროექტი ვერ მოიძებნა</h2><a href="index.html" class="btn btn-primary mt-3">მთავარ გვერდზე</a></div>';
-    } else {
-        document.title = project.title + ' - Georgian Heritage Portfolio';
-        renderProject(project);
-    }
-
     function hasMediaUrl(url) {
         return url && url !== '' && url !== 'None' && url !== 'null';
     }
@@ -341,6 +329,23 @@
             }).addTo(map);
             L.marker([lat, lng]).addTo(map).bindPopup('<b>' + p.title + '</b>').openPopup();
         } catch (e) { console.error('Map error:', e); }
+    }
+
+    // ===== FIND PROJECT BY ID =====
+    var urlParams = new URLSearchParams(window.location.search);
+    var projectId = urlParams.get('id');
+    var project = projectsData.find(function(p) { return p.id === projectId; });
+
+    if (!project) {
+        document.getElementById('projectPage').innerHTML = '<div class="text-center py-5"><h2>პროექტი ვერ მოიძებნა</h2><a href="index.html" class="btn btn-primary mt-3">მთავარ გვერდზე</a></div>';
+    } else {
+        document.title = project.title + ' - Georgian Heritage Portfolio';
+        try {
+            renderProject(project);
+        } catch (e) {
+            console.error('Project render error:', e);
+            document.getElementById('projectPage').innerHTML = '<div class="alert alert-danger">პროექტის ჩატვირთვა ვერ მოხერხდა. <a href="index.html">მთავარ გვერდზე</a></div>';
+        }
     }
 
     // ===== MOBILE MENU =====
