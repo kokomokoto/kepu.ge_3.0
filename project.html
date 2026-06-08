@@ -215,16 +215,31 @@
         var MAX_WAIT_MS = 120000;
         var mediaStopTimeout = null;
         var mediaAlreadyStopped = false;
-        var audioStarted = false;
+        var audioUnmuted = false;
 
         function tryStartAudio() {
-            if (audioStarted || !loadingAudio) return;
-            loadingAudio.muted = false;
+            if (!loadingAudio || mediaAlreadyStopped || audioUnmuted) return;
             loadingAudio.volume = 1;
+            loadingAudio.muted = false;
             loadingAudio.play().then(function() {
-                audioStarted = true;
+                audioUnmuted = true;
             }).catch(function() {
                 loadingAudio.muted = true;
+                loadingAudio.play().then(function() {
+                    loadingAudio.muted = false;
+                    return loadingAudio.play();
+                }).then(function() {
+                    audioUnmuted = true;
+                }).catch(function() {
+                    loadingAudio.muted = true;
+                });
+            });
+        }
+
+        function scheduleAudioRetries() {
+            tryStartAudio();
+            [250, 500, 1000, 2000].forEach(function(ms) {
+                setTimeout(tryStartAudio, ms);
             });
         }
 
@@ -258,9 +273,25 @@
             setTimeout(showViewer, 100);
         });
 
-        document.addEventListener('click', tryStartAudio, { once: true });
-        document.addEventListener('touchstart', tryStartAudio, { once: true });
-        setTimeout(tryStartAudio, 100);
+        document.addEventListener('click', tryStartAudio);
+        document.addEventListener('touchstart', tryStartAudio);
+        document.addEventListener('keydown', tryStartAudio);
+
+        if (loadingAudio) {
+            loadingAudio.addEventListener('canplay', tryStartAudio);
+            loadingAudio.addEventListener('loadeddata', tryStartAudio);
+        }
+        if (loadingVideo) {
+            loadingVideo.addEventListener('playing', tryStartAudio);
+        }
+        window.addEventListener('pageshow', function() {
+            if (!mediaAlreadyStopped) {
+                audioUnmuted = false;
+                scheduleAudioRetries();
+            }
+        });
+
+        scheduleAudioRetries();
 
         if (loadingVideo) {
             loadingVideo.loop = false;
