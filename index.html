@@ -262,6 +262,17 @@
     <script src="projects_data.js"></script>
 
     <script>
+    var prefetchedViewers = {};
+    function prefetchViewer(url) {
+        if (!url || url.charAt(0) === '<' || prefetchedViewers[url]) return;
+        prefetchedViewers[url] = true;
+        var link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.as = 'document';
+        link.href = url;
+        document.head.appendChild(link);
+    }
+
     // ===== RENDER PROJECT CARDS =====
     (function() {
         var container = document.getElementById('projectsContainer');
@@ -272,6 +283,9 @@
             col.setAttribute('data-type-categories', project.type_categories ? project.type_categories.join(',') : '');
             col.setAttribute('data-period-categories', project.period_categories ? project.period_categories.join(',') : '');
             col.setAttribute('data-href', 'project.html?id=' + encodeURIComponent(project.id));
+            if (project.viewer3D && project.viewer3D.indexOf('http') === 0) {
+                col.setAttribute('data-viewer-url', project.viewer3D);
+            }
 
             var imgHtml = project.main_image ? '<img src="' + project.main_image + '" class="card-img-top" alt="' + project.title + '">' : '';
             col.innerHTML = '<div class="card h-100">' + imgHtml + '<div class="card-body"><h5 class="card-title">' + project.title + '</h5></div></div>';
@@ -282,6 +296,10 @@
     // ===== CLICK HANDLERS =====
     var allProjects = document.querySelectorAll('.project-card');
     allProjects.forEach(function(card) {
+        card.addEventListener('mouseenter', function() {
+            var viewerUrl = this.getAttribute('data-viewer-url');
+            if (viewerUrl) prefetchViewer(viewerUrl);
+        });
         card.addEventListener('click', function(e) {
             var href = this.getAttribute('data-href');
             if (href) window.location.href = href;

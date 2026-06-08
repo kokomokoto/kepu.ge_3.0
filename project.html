@@ -104,7 +104,22 @@
         return url && url !== '' && url !== 'None' && url !== 'null';
     }
 
+    var prefetchedViewers = {};
+
+    function prefetchViewer(url) {
+        if (!url || url.charAt(0) === '<' || prefetchedViewers[url]) return;
+        prefetchedViewers[url] = true;
+        var link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.as = 'document';
+        link.href = url;
+        document.head.appendChild(link);
+    }
+
     function renderProject(p) {
+        if (p.viewer3D && p.viewer3D.charAt(0) !== '<') {
+            prefetchViewer(p.viewer3D);
+        }
         var html = '';
 
         // Title
