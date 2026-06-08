@@ -34,12 +34,17 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .hidden { display: none !important; }
-        .viewer-iframe {
-            width: 100%; border: none; border-radius: 0; box-shadow: none;
+        .viewer-stage {
+            width: 100%; position: relative; overflow: hidden;
         }
-        @media (min-width: 768px) { .viewer-iframe { height: 60vh; min-height: 400px; max-height: 600px; } }
-        @media (max-width: 767px) { .viewer-iframe { height: 50vh; min-height: 300px; max-height: 400px; } }
-        @media (min-width: 1200px) { .viewer-iframe { height: 65vh; max-height: 700px; } }
+        @media (min-width: 768px) { .viewer-stage { height: 60vh; min-height: 400px; max-height: 600px; } }
+        @media (max-width: 767px) { .viewer-stage { height: 50vh; min-height: 300px; max-height: 400px; } }
+        @media (min-width: 1200px) { .viewer-stage { height: 65vh; max-height: 700px; } }
+        .viewer-stage iframe,
+        .viewer-stage .viewer-iframe {
+            width: 100% !important; height: 100% !important; max-width: 100% !important;
+            border: none; border-radius: 0; box-shadow: none; display: block;
+        }
         @media (max-width: 767px) {
             #projectContent { display: flex; flex-direction: column; }
             #infoCol { order: -1; margin-bottom: 30px; }
@@ -140,7 +145,7 @@
                 html += '</div></div>';
             }
 
-            html += '<div id="viewer3D"' + (hasLoadingMedia ? ' class="hidden"' : '') + '>';
+            html += '<div id="viewer3D" class="viewer-stage' + (hasLoadingMedia ? ' hidden' : '') + '">';
             if (p.viewer3D.charAt(0) === '<') {
                 html += p.viewer3D;
             } else {
