@@ -273,10 +273,16 @@
         document.head.appendChild(link);
     }
 
+    function isPublicProject(project) {
+        var v = project.visibility || 'public';
+        return v === 'public';
+    }
+
     // ===== RENDER PROJECT CARDS =====
     (function() {
         var container = document.getElementById('projectsContainer');
         projectsData.forEach(function(project) {
+            if (!isPublicProject(project)) return;
             var col = document.createElement('div');
             col.className = 'project-card clickable-card';
             col.style.cssText = 'min-width:320px; max-width:340px; flex:0 0 320px; cursor: pointer;';
@@ -362,6 +368,7 @@
             }).addTo(map);
             var markers = [];
             projectsData.forEach(function(p) {
+                if (!isPublicProject(p)) return;
                 if (p.latitude && p.longitude) {
                     var lat = parseFloat(p.latitude), lng = parseFloat(p.longitude);
                     if (!isNaN(lat) && !isNaN(lng)) {
