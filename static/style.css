@@ -127,6 +127,10 @@ nav#mainNav {
   margin-top: 30px;
 }
 
+.viewer-wrap {
+  margin-bottom: 20px;
+}
+
 .home-video-wrap {
   width: 100%;
   height: 225px;
