@@ -106,8 +106,8 @@ nav#mainNav {
 }
 
 .navbar-search .form-control {
-  width: 11rem;
-  min-width: 5.5rem;
+  width: 16rem;
+  min-width: 6rem;
   max-width: 100%;
 }
 
