@@ -31,23 +31,24 @@
 <body>
     <!-- Header / Navbar -->
     <header class="navbar">
-        <div class="container">
-            <div class="mobile-header-top">
-                <div class="logo">
-                    <a href="index.html" class="text-white text-decoration-none">✻</a>
-                </div>
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="bi bi-list"></i>
-                </button>
-            </div>
+        <div class="container navbar-inner">
+            <a href="index.html" class="logo text-white text-decoration-none">✻</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="მენიუ">
+                <i class="bi bi-list"></i>
+            </button>
             <nav id="mainNav">
-                <a href="index.html" class="active">PROJECTS</a>
-                <a href="about.html">ABOUT</a>
-                <a href="contact.html">CONTACT</a>
+                <a href="index.html" class="active" data-i18n="nav.projects">პროექტები</a>
+                <a href="about.html" data-i18n="nav.about">შესახებ</a>
+                <a href="contact.html" data-i18n="nav.contact">კონტაქტი</a>
             </nav>
-            <div class="d-flex align-items-center gap-1">
+            <div class="navbar-tools">
+                <div class="lang-switcher btn-group btn-group-sm" role="group" aria-label="Language">
+                    <a href="#" class="btn btn-outline-light" data-lang="ka">ქარ</a>
+                    <a href="#" class="btn btn-outline-light" data-lang="en">ENG</a>
+                    <a href="#" class="btn btn-outline-light" data-lang="ru">РУС</a>
+                </div>
                 <a href="#" class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidepanel" aria-controls="filterSidepanel">
-                    <i class="bi bi-funnel" style="font-size: 1rem;"></i> FILTERS
+                    <i class="bi bi-funnel" style="font-size: 1rem;"></i> <span data-i18n="filters">ფილტრები</span>
                 </a>
             </div>
         </div>
@@ -56,7 +57,7 @@
     <!-- Sidepanel for filters -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="filterSidepanel" aria-labelledby="filterSidepanelLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="filterSidepanelLabel">ფილტრები</h5>
+            <h5 class="offcanvas-title" id="filterSidepanelLabel" data-i18n="filters">ფილტრები</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
@@ -256,9 +257,9 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/i18n.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    <!-- All 13 production projects loaded from shared data file -->
     <script src="projects_data.js"></script>
 
     <script>
@@ -293,8 +294,9 @@
                 col.setAttribute('data-viewer-url', project.viewer3D);
             }
 
-            var imgHtml = project.main_image ? '<img src="' + project.main_image + '" class="card-img-top" alt="' + project.title + '">' : '';
-            col.innerHTML = '<div class="card h-100">' + imgHtml + '<div class="card-body"><h5 class="card-title">' + project.title + '</h5></div></div>';
+            var title = SiteI18n.localizedField(project, 'title');
+            var imgHtml = project.main_image ? '<img src="' + project.main_image + '" class="card-img-top" alt="' + title + '">' : '';
+            col.innerHTML = '<div class="card h-100">' + imgHtml + '<div class="card-body"><h5 class="card-title project-card-title" data-project-id="' + project.id + '">' + title + '</h5></div></div>';
             container.appendChild(col);
         });
     })();
@@ -373,13 +375,20 @@
                     var lat = parseFloat(p.latitude), lng = parseFloat(p.longitude);
                     if (!isNaN(lat) && !isNaN(lng)) {
                         var m = L.marker([lat, lng]).addTo(map);
-                        m.bindPopup('<div style="max-width:200px;"><h6>' + p.title + '</h6><a href="project.html?id=' + encodeURIComponent(p.id) + '" class="btn btn-sm btn-primary">იხილეთ დეტალები</a></div>');
+                        m.bindPopup('<div style="max-width:200px;"><h6>' + SiteI18n.localizedField(p, 'title') + '</h6><a href="project.html?id=' + encodeURIComponent(p.id) + '" class="btn btn-sm btn-primary">' + SiteI18n.t('map.view_details') + '</a></div>');
                         markers.push([lat, lng]);
                     }
                 }
             });
             if (markers.length > 0) map.fitBounds(markers);
         } catch (e) { console.error('Map error:', e); }
+    });
+    window.addEventListener('sitelangchange', function() {
+        document.querySelectorAll('.project-card-title').forEach(function(el) {
+            var id = el.getAttribute('data-project-id');
+            var p = projectsData.find(function(x) { return x.id === id; });
+            if (p) el.textContent = SiteI18n.localizedField(p, 'title');
+        });
     });
     </script>
 </body>

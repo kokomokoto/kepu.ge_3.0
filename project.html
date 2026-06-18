@@ -50,27 +50,29 @@
 <body>
     <!-- Header / Navbar -->
     <header class="navbar">
-        <div class="container">
-            <div class="mobile-header-top">
-                <div class="logo">
-                    <a href="index.html" class="text-white text-decoration-none">✻</a>
-                </div>
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="bi bi-list"></i>
-                </button>
-            </div>
+        <div class="container navbar-inner">
+            <a href="index.html" class="logo text-white text-decoration-none">✻</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="მენიუ">
+                <i class="bi bi-list"></i>
+            </button>
             <nav id="mainNav">
-                <a href="index.html" class="active">PROJECTS</a>
-                <a href="about.html">ABOUT</a>
-                <a href="contact.html">CONTACT</a>
+                <a href="index.html" class="active" data-i18n="nav.projects">პროექტები</a>
+                <a href="about.html" data-i18n="nav.about">შესახებ</a>
+                <a href="contact.html" data-i18n="nav.contact">კონტაქტი</a>
             </nav>
-            <div class="d-flex align-items-center gap-1"></div>
+            <div class="navbar-tools">
+                <div class="lang-switcher btn-group btn-group-sm" role="group" aria-label="Language">
+                    <a href="#" class="btn btn-outline-light" data-lang="ka">ქარ</a>
+                    <a href="#" class="btn btn-outline-light" data-lang="en">ENG</a>
+                    <a href="#" class="btn btn-outline-light" data-lang="ru">РУС</a>
+                </div>
+            </div>
         </div>
     </header>
 
     <main class="container mb-5">
         <div class="container-fluid" id="projectPage">
-            <p>იტვირთება...</p>
+            <p data-i18n="loading">იტვირთება...</p>
         </div>
     </main>
 
@@ -81,6 +83,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/i18n.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
 
@@ -109,9 +112,10 @@
             prefetchViewer(p.viewer3D);
         }
         var html = '';
+        var title = SiteI18n.localizedField(p, 'title');
+        var desc = SiteI18n.localizedField(p, 'description') || '';
 
-        // Title
-        html += '<h1 class="project-title">' + p.title + '</h1>';
+        html += '<h1 class="project-title">' + title + '</h1>';
 
         // 3D Viewer
         if (p.viewer3D) {
@@ -143,36 +147,35 @@
 
         // Map
         if (p.latitude && p.longitude) {
-            html += '<h4>ადგილმდებარეობა რუკაზე</h4>';
+            html += '<h4>' + SiteI18n.t('project.location') + '</h4>';
             html += '<div id="map" style="height:350px; margin-bottom:20px;"></div>';
         }
 
         // Description + Info
         html += '<div class="row" id="projectContent">';
-        html += '<div class="col-md-8" id="descriptionCol"><h4>აღწერა</h4>';
-        var desc = p.description || '';
-        // Convert \r\n to <br> for proper display
+        html += '<div class="col-md-8" id="descriptionCol"><h4>' + SiteI18n.t('project.description') + '</h4>';
         desc = desc.replace(/\r\n/g, '<br>').replace(/\n/g, '<br>');
         html += '<div class="project-description">' + desc + '</div></div>';
 
-        html += '<div class="col-md-4" id="infoCol"><div class="card"><div class="card-header"><h5>პროექტის ინფორმაცია</h5></div><div class="card-body">';
-        if (p.project_info && Object.keys(p.project_info).length > 0) {
-            for (var key in p.project_info) {
-                if (p.project_info[key]) {
-                    html += '<p><strong>' + key + ':</strong> ' + p.project_info[key] + '</p>';
+        html += '<div class="col-md-4" id="infoCol"><div class="card"><div class="card-header"><h5>' + SiteI18n.t('project.info') + '</h5></div><div class="card-body" id="projectInfoBody">';
+        var infoItems = SiteI18n.localizedProjectInfo(p);
+        if (infoItems && Object.keys(infoItems).length > 0) {
+            for (var key in infoItems) {
+                if (infoItems[key]) {
+                    html += '<p><strong>' + key + ':</strong> ' + infoItems[key] + '</p>';
                 }
             }
         } else {
-            html += '<p class="text-muted">ინფორმაცია არ არის მითითებული</p>';
+            html += '<p class="text-muted">' + SiteI18n.t('project.info.empty') + '</p>';
         }
         html += '</div></div></div></div>';
 
         // Images
         var hasImages = p.main_image || (p.other_images && p.other_images.length > 0);
         if (hasImages) {
-            html += '<h4>სურათები</h4><div class="row">';
+            html += '<h4>' + SiteI18n.t('project.images') + '</h4><div class="row">';
             if (p.main_image) {
-                var caption = p.main_image_caption || 'მთავარი სურათი';
+                var caption = p.main_image_caption || SiteI18n.t('project.main_image');
                 html += '<div class="col-md-3 mb-2"><a href="' + p.main_image + '" class="glightbox" data-gallery="gallery1" data-title="' + caption + '"><img src="' + p.main_image + '" class="img-thumbnail" alt="' + caption + '"></a><div class="text-center small text-muted mt-1">' + caption + '</div></div>';
             }
             if (p.other_images) {
@@ -180,7 +183,7 @@
                     var url = (img && img.url) ? img.url : (typeof img === 'string' ? img : '');
                     var cap = (img && img.caption) ? img.caption : '';
                     if (url) {
-                        html += '<div class="col-md-3 mb-2"><a href="' + url + '" class="glightbox" data-gallery="gallery1" data-title="' + cap + '"><img src="' + url + '" class="img-thumbnail" alt="სურათი"></a>';
+                        html += '<div class="col-md-3 mb-2"><a href="' + url + '" class="glightbox" data-gallery="gallery1" data-title="' + cap + '"><img src="' + url + '" class="img-thumbnail" alt="' + SiteI18n.t('project.image') + '"></a>';
                         if (cap) html += '<div class="text-center small text-muted mt-1">' + cap + '</div>';
                         html += '</div>';
                     }
@@ -331,22 +334,32 @@
         } catch (e) { console.error('Map error:', e); }
     }
 
+    var currentProject = null;
+
     // ===== FIND PROJECT BY ID =====
     var urlParams = new URLSearchParams(window.location.search);
     var projectId = urlParams.get('id');
     var project = projectsData.find(function(p) { return p.id === projectId; });
 
     if (!project) {
-        document.getElementById('projectPage').innerHTML = '<div class="text-center py-5"><h2>პროექტი ვერ მოიძებნა</h2><a href="index.html" class="btn btn-primary mt-3">მთავარ გვერდზე</a></div>';
+        document.getElementById('projectPage').innerHTML = '<div class="text-center py-5"><h2>' + SiteI18n.t('project.not_found') + '</h2><a href="index.html" class="btn btn-primary mt-3">' + SiteI18n.t('project.back_home') + '</a></div>';
     } else {
-        document.title = project.title + ' - Georgian Heritage Portfolio';
+        currentProject = project;
+        document.title = SiteI18n.localizedField(project, 'title') + ' - Georgian Heritage Portfolio';
         try {
             renderProject(project);
         } catch (e) {
             console.error('Project render error:', e);
-            document.getElementById('projectPage').innerHTML = '<div class="alert alert-danger">პროექტის ჩატვირთვა ვერ მოხერხდა. <a href="index.html">მთავარ გვერდზე</a></div>';
+            document.getElementById('projectPage').innerHTML = '<div class="alert alert-danger"><a href="index.html">' + SiteI18n.t('project.back_home') + '</a></div>';
         }
     }
+
+    window.addEventListener('sitelangchange', function() {
+        if (currentProject) {
+            document.title = SiteI18n.localizedField(currentProject, 'title') + ' - Georgian Heritage Portfolio';
+            try { renderProject(currentProject); } catch (e) { console.error(e); }
+        }
+    });
 
     // ===== MOBILE MENU =====
     var mobileMenuBtn = document.getElementById('mobileMenuBtn');
