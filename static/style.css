@@ -734,9 +734,11 @@ main.container {
   }
 }
 
-.lang-switcher .btn.active {
-  background-color: var(--gold-accent, #c9a227);
-  border-color: var(--gold-accent, #c9a227);
-  color: #1a1a2e;
+.lang-switcher .btn.active,
+.lang-switcher .btn.active:hover,
+.lang-switcher .btn.active:focus {
+  background-color: var(--gold-accent, #c9a227) !important;
+  border-color: var(--gold-accent, #c9a227) !important;
+  color: #1a1a2e !important;
   font-weight: 600;
 }
