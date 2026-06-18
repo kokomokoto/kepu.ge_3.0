@@ -32,27 +32,29 @@
     <!-- Header / Navbar -->
     <header class="navbar">
         <div class="container navbar-inner">
-            <a href="index.html" class="logo text-white text-decoration-none">✻</a>
-            <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="მენიუ">
-                <i class="bi bi-list"></i>
-            </button>
-            <nav id="mainNav">
-                <a href="index.html" class="active" data-i18n="nav.projects">პროექტები</a>
-                <a href="about.html" data-i18n="nav.about">შესახებ</a>
-                <a href="contact.html" data-i18n="nav.contact">კონტაქტი</a>
-            </nav>
-            <div class="navbar-tools">
+            <div class="navbar-start">
+                <a href="index.html" class="logo text-white text-decoration-none">✻</a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="მენიუ">
+                    <i class="bi bi-list"></i>
+                </button>
+                <nav id="mainNav">
+                    <a href="index.html" class="active" data-i18n="nav.projects">პროექტები</a>
+                    <a href="about.html" data-i18n="nav.about">შესახებ</a>
+                    <a href="contact.html" data-i18n="nav.contact">კონტაქტი</a>
+                </nav>
+            </div>
+            <form class="navbar-search navbar-search-center" role="search" onsubmit="return false;">
+                <input type="text" id="searchInput" class="form-control form-control-sm" autocomplete="off" data-i18n="search.placeholder" placeholder="ძებნა სათაურით" />
+            </form>
+            <div class="navbar-end">
+                <a href="#" class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidepanel" aria-controls="filterSidepanel">
+                    <i class="bi bi-funnel" style="font-size: 1rem;"></i> <span data-i18n="filters">ფილტრები</span>
+                </a>
                 <div class="lang-switcher btn-group btn-group-sm" role="group" aria-label="Language">
                     <a href="#" class="btn btn-outline-light" data-lang="ka">ქარ</a>
                     <a href="#" class="btn btn-outline-light" data-lang="en">ENG</a>
                     <a href="#" class="btn btn-outline-light" data-lang="ru">РУС</a>
                 </div>
-                <a href="#" class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidepanel" aria-controls="filterSidepanel">
-                    <i class="bi bi-funnel" style="font-size: 1rem;"></i> <span data-i18n="filters">ფილტრები</span>
-                </a>
-                <form class="navbar-search" role="search" onsubmit="return false;">
-                    <input type="text" id="searchInput" class="form-control form-control-sm" autocomplete="off" data-i18n="search.placeholder" placeholder="ძებნა სათაურით" />
-                </form>
             </div>
         </div>
     </header>

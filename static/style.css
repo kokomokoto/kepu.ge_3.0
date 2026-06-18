@@ -55,6 +55,14 @@ img {
   flex-wrap: nowrap;
 }
 
+.navbar-start {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
 .navbar .logo {
   flex: 0 0 auto;
   font-size: 1.6rem;
@@ -69,24 +77,41 @@ nav#mainNav {
   min-width: 0;
 }
 
-.navbar-tools {
+.navbar-end {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  margin-left: auto;
+  flex: 1 1 0;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.navbar-inner:not(:has(.navbar-search-center)) .navbar-start {
+  flex: 1 1 auto;
+}
+
+.navbar-inner:not(:has(.navbar-search-center)) .navbar-end {
   flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .navbar-search {
   margin: 0;
 }
 
-.navbar-search .form-control {
-  width: 9.5rem;
-  min-width: 5.5rem;
+.navbar-search-center {
+  flex: 0 1 auto;
+  display: flex;
+  justify-content: center;
 }
 
-.navbar-tools .btn-outline-light {
+.navbar-search .form-control {
+  width: 11rem;
+  min-width: 5.5rem;
+  max-width: 100%;
+}
+
+.navbar-end .btn-outline-light {
   padding: 0.2rem 0.45rem;
   font-size: 0.78rem;
   white-space: nowrap;
@@ -344,12 +369,27 @@ main.container {
     width: 100%;
   }
 
-  .navbar-tools {
+  .navbar-start {
+    flex: 1 1 auto;
+    width: auto;
+  }
+
+  .navbar-end {
+    order: 2;
+    flex: 0 0 auto;
+    margin-left: auto;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .navbar-search-center {
     order: 3;
     width: 100%;
-    margin-left: 0;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+    flex: 1 1 100%;
+  }
+
+  .navbar-search-center .form-control {
+    width: 100%;
   }
 
   .mobile-menu-btn {
