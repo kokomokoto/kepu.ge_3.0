@@ -9,24 +9,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="stylesheet" href="static/style.css">
-    <style>
-        .viewer-wrap{margin-bottom:20px;}
-        .viewer-iframe {
-            width: 100%;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        @media (min-width: 768px) {
-            .viewer-iframe { height: 60vh; min-height: 400px; max-height: 600px; }
-        }
-        @media (max-width: 767px) {
-            .viewer-iframe { height: 50vh; min-height: 300px; max-height: 400px; }
-        }
-        @media (min-width: 1200px) {
-            .viewer-iframe { height: 65vh; max-height: 700px; }
-        }
-    </style>
 </head>
 <body>
     <!-- Header / Navbar -->
@@ -134,9 +116,9 @@
 
     <main class="container mb-5">
         <!-- Home 3D Viewer -->
-        <div class="container mb-4" style="margin-top: 30px;">
-            <div class="viewer-wrap">
-                <iframe id="viewer" width="100%" height="225" allow="fullscreen; xr-spatial-tracking" src="https://superspl.at/s?id=4aeaa171"></iframe>
+        <div class="container-fluid px-0 mb-4 home-viewer-section">
+            <div class="viewer-wrap home-video-wrap">
+                <video class="home-hero-video" autoplay muted playsinline loop><source src="https://pub-e596682234f34e708445409c12658970.r2.dev/10)%20tbilisi%20andza/tbilisis%20andza.mp4" type="video/mp4"></video>
             </div>
         </div>
 
