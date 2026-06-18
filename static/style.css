@@ -125,10 +125,6 @@ nav#mainNav {
 /* ===== HOME HERO VIDEO / VIEWER ===== */
 .home-viewer-section {
   margin-top: 30px;
-  width: 100vw;
-  max-width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
 }
 
 .home-video-wrap {
@@ -144,7 +140,7 @@ nav#mainNav {
 .home-hero-video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
