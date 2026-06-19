@@ -27,9 +27,6 @@
                     <a href="contact.html" data-i18n="nav.contact">კონტაქტი</a>
                 </nav>
             </div>
-            <form class="navbar-search navbar-search-center" role="search" onsubmit="return false;">
-                <input type="text" id="searchInput" class="form-control form-control-sm" autocomplete="off" data-i18n="search.placeholder" placeholder="ძებნა სათაურით" />
-            </form>
             <div class="navbar-end">
                 <a href="#" class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidepanel" aria-controls="filterSidepanel">
                     <i class="bi bi-funnel" style="font-size: 1rem;"></i> <span data-i18n="filters">ფილტრები</span>
@@ -211,34 +208,19 @@
         document.querySelectorAll('.filter-checkbox').forEach(function(cb) { cb.checked = false; });
         applyFilters();
     });
-    function projectMatchesSearch(card, q) {
-        if (!q) return true;
-        var titleEl = card.querySelector('.project-card-title');
-        if (!titleEl) return true;
-        var pid = titleEl.getAttribute('data-project-id');
-        var p = projectsData.find(function(x) { return x.id === pid; });
-        if (!p) return true;
-        var hay = [p.title, p.title_en, p.title_ru].filter(Boolean).join(' ').toLowerCase();
-        return hay.indexOf(q) >= 0;
-    }
-
     function applyFilters() {
-        var q = (document.getElementById('searchInput') && document.getElementById('searchInput').value || '').trim().toLowerCase();
         var selectedTypes = Array.from(document.querySelectorAll('.filter-checkbox[data-type="type"]:checked')).map(function(cb) { return cb.value; });
         var selectedPeriods = Array.from(document.querySelectorAll('.filter-checkbox[data-type="period"]:checked')).map(function(cb) { return cb.value; });
         allProjects = document.querySelectorAll('.project-card');
         allProjects.forEach(function(project) {
             var pTypes = project.getAttribute('data-type-categories').split(',').filter(function(t) { return t; });
             var pPeriods = project.getAttribute('data-period-categories').split(',').filter(function(p) { return p; });
-            var show = projectMatchesSearch(project, q);
+            var show = true;
             if (selectedTypes.length > 0) show = show && selectedTypes.some(function(t) { return pTypes.includes(t); });
             if (selectedPeriods.length > 0) show = show && selectedPeriods.some(function(p) { return pPeriods.includes(p); });
             project.style.display = show ? 'block' : 'none';
         });
     }
-
-    var searchInput = document.getElementById('searchInput');
-    if (searchInput) searchInput.addEventListener('input', applyFilters);
 
     // ===== MOBILE MENU =====
     var mobileMenuBtn = document.getElementById('mobileMenuBtn');
