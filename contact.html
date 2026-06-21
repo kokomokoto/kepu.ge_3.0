@@ -38,15 +38,22 @@
     </div>
 </header>
 
-    <main class="container mb-5">
+    <main class="container-fluid px-3 px-lg-4 mb-5">
         <style>
 .cv-container {
-    max-width: 1000px;
+    width: 40%;
+    max-width: 40%;
     margin: 0 auto;
     background: white;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+}
+@media (max-width: 768px) {
+    .cv-container {
+        width: 100%;
+        max-width: 100%;
+    }
 }
 .cv-header {
     background: linear-gradient(135deg, var(--deep-forest-green) 0%, var(--dark-navy) 100%);
@@ -102,6 +109,12 @@
     opacity: 0.9;
 }
 .cv-contact-item i { color: var(--gold-accent); }
+.cv-profiles {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    width: 100%;
+}
 .cv-main {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -175,13 +188,19 @@
 }
 .social-links a:hover { color: var(--gold-accent); }
 </style>
-        <div class="cv-container">
+        <div class="cv-profiles">
+
+
+    
+
+
+<div class="cv-container">
     <header class="cv-header">
         
-        <img src="static/images/kepman.jpg" alt="გიორგი კეპულაძე" class="cv-photo">
+        <img src="https://pub-e596682234f34e708445409c12658970.r2.dev/0%203d/kepu.jpg" alt="გიორგი კეპულაძე" class="cv-photo">
         
         <h1 class="cv-name">გიორგი კეპულაძე</h1>
-        <p class="cv-title">კულტურული მემკვიდრეობის სპეციალისტი | არქიტექტორი</p>
+        <p class="cv-title">არქიტექტორი</p>
         <div class="cv-contact-info">
             
             <div class="cv-contact-item"><i class="bi bi-envelope"></i><span>gmankepuladze@gmail.com</span></div>
@@ -195,23 +214,65 @@
         </div>
     </header>
 
-    <div class="cv-main">
-        <aside class="cv-sidebar">
-            
+    
 
+    
+    <footer class="cv-footer">
+        <h3>დამიკავშირდით</h3>
+        <p>მზად ვარ თანამშრომლობისთვის კულტურული მემკვიდრეობის პროექტებში</p>
+        
+        <div class="social-links">
             
+            
+            <a href="#" title="Linkedin">
+                <i class="bi bi-linkedin"></i>
+            </a>
+            
+            
+            <a href="#" title="Instagram">
+                <i class="bi bi-instagram"></i>
+            </a>
+            
+            
+            <a href="#" title="Twitter">
+                <i class="bi bi-twitter"></i>
+            </a>
+            
+            
+            <a href="gmankepuladze@gmail.com" title="Email" target="_blank" rel="noopener">
+                <i class="bi bi-envelope"></i>
+            </a>
+            
+        </div>
+        
+    </footer>
+    
+</div>
 
-            
-        </aside>
+    
 
-        <main class="cv-content">
-            
 
+<div class="cv-container">
+    <header class="cv-header">
+        
+        <img src="https://pub-e596682234f34e708445409c12658970.r2.dev/0%203d/shalva.jpg" alt="შალვა ხუციშვილი" class="cv-photo">
+        
+        <h1 class="cv-name">შალვა ხუციშვილი</h1>
+        <p class="cv-title">არქიტექტორი</p>
+        <div class="cv-contact-info">
             
+            <div class="cv-contact-item"><i class="bi bi-envelope"></i><span>gmankepuladze@gmail.com</span></div>
+            
+            
+            <div class="cv-contact-item"><i class="bi bi-telephone"></i><span>+995577128335</span></div>
+            
+            
+            <div class="cv-contact-item"><i class="bi bi-geo-alt"></i><span>თბილისი, საქართველო</span></div>
+            
+        </div>
+    </header>
 
-            
-        </main>
-    </div>
+    
 
     
     <footer class="cv-footer">
@@ -249,6 +310,8 @@
         
     </footer>
     
+</div>
+
 </div>
     </main>
 
