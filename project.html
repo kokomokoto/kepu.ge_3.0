@@ -25,19 +25,26 @@
         @media (min-width: 1200px) { .loading-container { height: 65vh; max-height: 700px; } }
         .loading-video { width: 100%; height: 100%; object-fit: cover; }
         .loading-fullscreen-btn {
-            position: absolute; right: 12px; bottom: 12px; z-index: 5;
-            border: none; border-radius: 8px; width: 44px; height: 44px;
+            position: absolute; right: 12px; bottom: 12px; z-index: 100001;
+            border: none; border-radius: 8px; width: 48px; height: 48px;
             display: inline-flex; align-items: center; justify-content: center;
-            background: rgba(10, 24, 40, 0.72); color: #fff; font-size: 1.25rem;
-            cursor: pointer; transition: background 0.2s ease, transform 0.2s ease;
+            background: rgba(10, 24, 40, 0.78); color: #fff; font-size: 1.25rem;
+            cursor: pointer; pointer-events: auto; touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.2s ease, transform 0.2s ease;
         }
         .loading-fullscreen-btn:hover { background: rgba(10, 24, 40, 0.9); transform: scale(1.05); }
         .loading-container:fullscreen,
-        .loading-container:-webkit-full-screen {
+        .loading-container:-webkit-full-screen,
+        .loading-container.loading-fs-active {
             width: 100vw; height: 100vh; max-height: none; min-height: 100vh; margin: 0; background: #000;
         }
+        .loading-container.loading-fs-active {
+            position: fixed !important; inset: 0; z-index: 99999; border-radius: 0;
+        }
         .loading-container:fullscreen .loading-video,
-        .loading-container:-webkit-full-screen .loading-video { object-fit: contain; }
+        .loading-container:-webkit-full-screen .loading-video,
+        .loading-container.loading-fs-active .loading-video { object-fit: contain; }
         .hidden { display: none !important; }
         .viewer-stage {
             width: 100%; position: relative; overflow: hidden;
@@ -351,6 +358,7 @@
                 var exit = document.exitFullscreen || document.webkitExitFullscreen;
                 if (exit) exit.call(document);
             }
+            loadingContainer.classList.remove('loading-fs-active');
             if (loadingAudio) {
                 loadingAudio.pause();
                 loadingAudio.currentTime = 0;
@@ -369,14 +377,22 @@
         loadingContainer.style.cursor = 'pointer';
         loadingContainer.title = '3D მოდელის ნახვისთვის დააჭირეთ';
 
+        function getNativeFullscreenEl() {
+            return document.fullscreenElement || document.webkitFullscreenElement || null;
+        }
+
         function isLoadingFullscreen() {
-            var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-            return fsEl === loadingContainer;
+            var fsEl = getNativeFullscreenEl();
+            if (fsEl === loadingContainer || (loadingVideo && fsEl === loadingVideo)) return true;
+            if (loadingVideo && loadingVideo.webkitDisplayingFullscreen) return true;
+            return loadingContainer.classList.contains('loading-fs-active');
         }
 
         function updateFullscreenBtn() {
             var btn = document.getElementById('loadingFullscreenBtn');
             if (!btn) return;
+            btn.style.display = 'inline-flex';
+            btn.disabled = false;
             var icon = btn.querySelector('i');
             if (!icon) return;
             if (isLoadingFullscreen()) {
@@ -390,30 +406,100 @@
             }
         }
 
+        function enterLoadingFullscreen() {
+            if (loadingVideo && typeof loadingVideo.webkitEnterFullscreen === 'function') {
+                try {
+                    loadingVideo.webkitEnterFullscreen();
+                    updateFullscreenBtn();
+                    return;
+                } catch (err) {}
+            }
+            var target = loadingContainer;
+            var req = loadingContainer.requestFullscreen || loadingContainer.webkitRequestFullscreen;
+            if (req) {
+                Promise.resolve(req.call(target)).then(function() {
+                    updateFullscreenBtn();
+                }).catch(function() {
+                    loadingContainer.classList.add('loading-fs-active');
+                    updateFullscreenBtn();
+                });
+                return;
+            }
+            loadingContainer.classList.add('loading-fs-active');
+            updateFullscreenBtn();
+        }
+
+        function exitLoadingFullscreen() {
+            if (loadingVideo && loadingVideo.webkitDisplayingFullscreen && typeof loadingVideo.webkitExitFullscreen === 'function') {
+                try { loadingVideo.webkitExitFullscreen(); } catch (err) {}
+            }
+            var fsEl = getNativeFullscreenEl();
+            if (fsEl) {
+                var exitFs = document.exitFullscreen || document.webkitExitFullscreen;
+                if (exitFs) {
+                    Promise.resolve(exitFs.call(document)).catch(function() {});
+                }
+            }
+            loadingContainer.classList.remove('loading-fs-active');
+            updateFullscreenBtn();
+        }
+
         function toggleLoadingFullscreen(e) {
             if (e) {
                 e.preventDefault();
                 e.stopPropagation();
             }
+            if (loadingContainer._fsToggleLock) return;
+            loadingContainer._fsToggleLock = true;
+            setTimeout(function() { loadingContainer._fsToggleLock = false; }, 450);
             tryStartAudio();
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                var req = loadingContainer.requestFullscreen || loadingContainer.webkitRequestFullscreen;
-                if (req) {
-                    Promise.resolve(req.call(loadingContainer)).catch(function() {});
-                }
+            if (isLoadingFullscreen()) {
+                exitLoadingFullscreen();
             } else {
-                var exitFs = document.exitFullscreen || document.webkitExitFullscreen;
-                if (exitFs) exitFs.call(document);
+                enterLoadingFullscreen();
             }
-            setTimeout(updateFullscreenBtn, 100);
+            setTimeout(updateFullscreenBtn, 50);
+            setTimeout(updateFullscreenBtn, 300);
+        }
+
+        function syncFullscreenAfterOrientation() {
+            var fsEl = getNativeFullscreenEl();
+            var nativeOnVideo = !!(loadingVideo && loadingVideo.webkitDisplayingFullscreen);
+            if (!fsEl && !nativeOnVideo && loadingContainer.classList.contains('loading-fs-active')) {
+                updateFullscreenBtn();
+                return;
+            }
+            if (!fsEl && !nativeOnVideo) {
+                loadingContainer.classList.remove('loading-fs-active');
+            }
+            updateFullscreenBtn();
         }
 
         var fullscreenBtn = document.getElementById('loadingFullscreenBtn');
         if (fullscreenBtn) {
             fullscreenBtn.addEventListener('click', toggleLoadingFullscreen);
+            fullscreenBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleLoadingFullscreen(e);
+            }, { passive: false });
         }
         document.addEventListener('fullscreenchange', updateFullscreenBtn);
         document.addEventListener('webkitfullscreenchange', updateFullscreenBtn);
+        if (loadingVideo) {
+            loadingVideo.addEventListener('webkitbeginfullscreen', updateFullscreenBtn);
+            loadingVideo.addEventListener('webkitendfullscreen', function() {
+                loadingContainer.classList.remove('loading-fs-active');
+                updateFullscreenBtn();
+            });
+        }
+        window.addEventListener('orientationchange', function() {
+            setTimeout(syncFullscreenAfterOrientation, 250);
+            setTimeout(syncFullscreenAfterOrientation, 700);
+        });
+        window.addEventListener('resize', function() {
+            setTimeout(syncFullscreenAfterOrientation, 150);
+        });
 
         loadingContainer.addEventListener('click', function(e) {
             if (e.target.closest && e.target.closest('#loadingFullscreenBtn')) return;
