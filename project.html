@@ -73,6 +73,12 @@
             z-index: 99999;
             border-radius: 0;
         }
+        .viewer-fullscreen-btn { display: none; z-index: 100002; }
+        .viewer-stage:fullscreen .viewer-fullscreen-btn,
+        .viewer-stage:-webkit-full-screen .viewer-fullscreen-btn,
+        .viewer-stage.viewer-fs-active .viewer-fullscreen-btn {
+            display: inline-flex !important;
+        }
 
         @media (max-width: 767px) {
             #projectContent { display: flex; flex-direction: column; }
@@ -156,8 +162,8 @@
 
         html += '<h1 class="project-title">' + title + '</h1>';
 
-        // 3D Viewer
-        if (p.viewer3D) {
+
+                if (p.viewer3D) {
             var hasVideo = hasMediaUrl(p.loading_video);
             var hasAudio = hasMediaUrl(p.loading_audio);
             var hasLoadingMedia = hasVideo || hasAudio;
@@ -192,6 +198,7 @@
                 html += '<iframe src="' + p.viewer3D + '" class="viewer-iframe" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="xr-spatial-tracking; gyroscope; accelerometer"></iframe>';
                 prefetchViewer(p.viewer3D);
             }
+                        html += '<button type="button" id="viewerFullscreenBtn" class="loading-fullscreen-btn viewer-fullscreen-btn" title="სრული ეკრანიდან გასვლა" aria-label="სრული ეკრანიდან გასვლა"><i class="bi bi-fullscreen-exit"></i></button>';
             html += '</div></div>';
         }
 
@@ -398,10 +405,38 @@
             if (exit && fsEl && fsEl !== viewer3D) {
                 Promise.resolve(exit.call(document)).finally(function() {
                     viewer3D.classList.add('viewer-fs-active');
+                    updateViewerFullscreenBtn();
                 });
                 return;
             }
             viewer3D.classList.add('viewer-fs-active');
+            updateViewerFullscreenBtn();
+        }
+
+        function isViewerFullscreen() {
+            if (!viewer3D) return false;
+            var fsEl = document.fullscreenElement || document.webkitFullscreenElement || null;
+            if (fsEl === viewer3D) return true;
+            return viewer3D.classList.contains('viewer-fs-active');
+        }
+
+        function updateViewerFullscreenBtn() {
+            var btn = document.getElementById('viewerFullscreenBtn');
+            if (!btn) return;
+            btn.style.display = isViewerFullscreen() ? 'inline-flex' : 'none';
+        }
+
+        function exitViewerFullscreen() {
+            if (!viewer3D) return;
+            viewer3D.classList.remove('viewer-fs-active');
+            var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+            if (fsEl === viewer3D) {
+                var exitFs = document.exitFullscreen || document.webkitExitFullscreen;
+                if (exitFs) {
+                    Promise.resolve(exitFs.call(document)).catch(function() {});
+                }
+            }
+            updateViewerFullscreenBtn();
         }
 
         function enterViewerFullscreen() {
@@ -410,6 +445,7 @@
             if (req) {
                 Promise.resolve(req.call(viewer3D)).then(function() {
                     viewer3D.classList.remove('viewer-fs-active');
+                    updateViewerFullscreenBtn();
                 }).catch(function() {
                     applyViewerCssFullscreen();
                 });
@@ -460,6 +496,8 @@
 
             if (keepViewerFullscreen) {
                 enterViewerFullscreen();
+                setTimeout(updateViewerFullscreenBtn, 50);
+                setTimeout(updateViewerFullscreenBtn, 300);
             }
         }
 
@@ -574,8 +612,32 @@
                 toggleLoadingFullscreen(e);
             }, { passive: false });
         }
-        document.addEventListener('fullscreenchange', updateFullscreenBtn);
-        document.addEventListener('webkitfullscreenchange', updateFullscreenBtn);
+        var viewerFullscreenBtn = document.getElementById('viewerFullscreenBtn');
+        if (viewerFullscreenBtn) {
+            viewerFullscreenBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                exitViewerFullscreen();
+            });
+            viewerFullscreenBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                exitViewerFullscreen();
+            }, { passive: false });
+        }
+        document.addEventListener('fullscreenchange', function() {
+            updateFullscreenBtn();
+            updateViewerFullscreenBtn();
+        });
+        document.addEventListener('webkitfullscreenchange', function() {
+            updateFullscreenBtn();
+            updateViewerFullscreenBtn();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && viewer3D && viewer3D.classList.contains('viewer-fs-active')) {
+                exitViewerFullscreen();
+            }
+        });
         if (loadingVideo) {
             loadingVideo.addEventListener('webkitbeginfullscreen', updateFullscreenBtn);
             loadingVideo.addEventListener('webkitendfullscreen', function() {
