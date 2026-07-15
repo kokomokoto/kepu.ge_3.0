@@ -62,8 +62,10 @@
         .viewer-stage.viewer-fs-active {
             width: 100vw !important;
             height: 100vh !important;
+            height: 100dvh !important;
             max-height: none !important;
             min-height: 100vh !important;
+            min-height: 100dvh !important;
             margin: 0 !important;
             background: #000;
         }
@@ -76,8 +78,25 @@
         .viewer-fullscreen-btn { display: none; z-index: 100002; }
         .viewer-stage:fullscreen .viewer-fullscreen-btn,
         .viewer-stage:-webkit-full-screen .viewer-fullscreen-btn,
-        .viewer-stage.viewer-fs-active .viewer-fullscreen-btn {
+        .viewer-stage.viewer-fs-active .viewer-fullscreen-btn,
+        .viewer-fullscreen-btn.viewer-exit-floating {
             display: inline-flex !important;
+        }
+        .viewer-fullscreen-btn.viewer-exit-floating {
+            position: fixed !important;
+            right: max(14px, env(safe-area-inset-right));
+            bottom: max(18px, env(safe-area-inset-bottom));
+            width: 56px;
+            height: 56px;
+            z-index: 2147483000 !important;
+            pointer-events: auto !important;
+            touch-action: manipulation;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+        }
+        html.viewer-fs-lock,
+        body.viewer-fs-lock {
+            overflow: hidden !important;
+            overscroll-behavior: none;
         }
 
         @media (max-width: 767px) {
@@ -310,6 +329,7 @@
         var soundUnmuted = false;
         var viewerLoadStarted = false;
         var videoFullyReady = false;
+        var viewerWantsFullscreen = false;
 
         function tryUnmuteMedia(el) {
             if (!el) return Promise.resolve(false);
@@ -410,11 +430,34 @@
             return Promise.resolve(exitFs.call(document)).catch(function() {});
         }
 
+        function mountViewerExitControl(active) {
+            var btn = document.getElementById('viewerFullscreenBtn');
+            if (!btn || !viewer3D) return;
+            if (active) {
+                if (btn.parentElement !== document.body) {
+                    document.body.appendChild(btn);
+                }
+                btn.classList.add('viewer-exit-floating');
+                btn.style.display = 'inline-flex';
+                btn.setAttribute('aria-hidden', 'false');
+            } else {
+                btn.classList.remove('viewer-exit-floating');
+                btn.style.display = 'none';
+                btn.setAttribute('aria-hidden', 'true');
+                if (btn.parentElement !== viewer3D) {
+                    viewer3D.appendChild(btn);
+                }
+            }
+        }
+
         function applyViewerCssFullscreen() {
             if (!viewer3D) return;
             exitAnyNativeFullscreen().finally(function() {
                 if (!viewer3D) return;
                 viewer3D.classList.add('viewer-fs-active');
+                document.documentElement.classList.add('viewer-fs-lock');
+                document.body.classList.add('viewer-fs-lock');
+                mountViewerExitControl(true);
                 updateViewerFullscreenBtn();
             });
         }
@@ -429,12 +472,20 @@
         function updateViewerFullscreenBtn() {
             var btn = document.getElementById('viewerFullscreenBtn');
             if (!btn) return;
-            btn.style.display = isViewerFullscreen() ? 'inline-flex' : 'none';
+            if (isViewerFullscreen()) {
+                mountViewerExitControl(true);
+            } else {
+                mountViewerExitControl(false);
+            }
         }
 
         function exitViewerFullscreen() {
             if (!viewer3D) return;
+            viewerWantsFullscreen = false;
             viewer3D.classList.remove('viewer-fs-active');
+            document.documentElement.classList.remove('viewer-fs-lock');
+            document.body.classList.remove('viewer-fs-lock');
+            mountViewerExitControl(false);
             exitAnyNativeFullscreen().finally(function() {
                 updateViewerFullscreenBtn();
             });
@@ -474,11 +525,15 @@
             viewer3D.classList.remove('hidden');
 
             if (keepViewerFullscreen) {
+                viewerWantsFullscreen = true;
                 enterViewerFullscreen();
-                setTimeout(updateViewerFullscreenBtn, 50);
-                setTimeout(updateViewerFullscreenBtn, 300);
+                setTimeout(function() { if (viewerWantsFullscreen) { enterViewerFullscreen(); updateViewerFullscreenBtn(); } }, 100);
+                setTimeout(function() { if (viewerWantsFullscreen) { enterViewerFullscreen(); updateViewerFullscreenBtn(); } }, 400);
+                setTimeout(function() { if (viewerWantsFullscreen) updateViewerFullscreenBtn(); }, 800);
             } else {
+                viewerWantsFullscreen = false;
                 exitAnyNativeFullscreen();
+                mountViewerExitControl(false);
             }
         }
 
@@ -595,16 +650,17 @@
         }
         var viewerFullscreenBtn = document.getElementById('viewerFullscreenBtn');
         if (viewerFullscreenBtn) {
-            viewerFullscreenBtn.addEventListener('click', function(e) {
+            var viewerExitTapLock = false;
+            function onViewerExitTap(e) {
                 e.preventDefault();
                 e.stopPropagation();
+                if (viewerExitTapLock) return;
+                viewerExitTapLock = true;
+                setTimeout(function() { viewerExitTapLock = false; }, 450);
                 exitViewerFullscreen();
-            });
-            viewerFullscreenBtn.addEventListener('touchend', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                exitViewerFullscreen();
-            }, { passive: false });
+            }
+            viewerFullscreenBtn.addEventListener('click', onViewerExitTap);
+            viewerFullscreenBtn.addEventListener('touchend', onViewerExitTap, { passive: false });
         }
         document.addEventListener('fullscreenchange', function() {
             updateFullscreenBtn();
@@ -624,6 +680,14 @@
             loadingVideo.addEventListener('webkitendfullscreen', function() {
                 loadingContainer.classList.remove('loading-fs-active');
                 updateFullscreenBtn();
+                if (viewerWantsFullscreen && mediaAlreadyStopped) {
+                    setTimeout(function() {
+                        if (viewerWantsFullscreen) enterViewerFullscreen();
+                    }, 50);
+                    setTimeout(function() {
+                        if (viewerWantsFullscreen) enterViewerFullscreen();
+                    }, 350);
+                }
             });
         }
         window.addEventListener('orientationchange', function() {
