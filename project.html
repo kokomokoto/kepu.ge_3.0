@@ -24,6 +24,20 @@
         @media (max-width: 767px) { .loading-container { height: 50vh; min-height: 300px; max-height: 400px; } }
         @media (min-width: 1200px) { .loading-container { height: 65vh; max-height: 700px; } }
         .loading-video { width: 100%; height: 100%; object-fit: cover; }
+        .loading-fullscreen-btn {
+            position: absolute; right: 12px; bottom: 12px; z-index: 5;
+            border: none; border-radius: 8px; width: 44px; height: 44px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(10, 24, 40, 0.72); color: #fff; font-size: 1.25rem;
+            cursor: pointer; transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .loading-fullscreen-btn:hover { background: rgba(10, 24, 40, 0.9); transform: scale(1.05); }
+        .loading-container:fullscreen,
+        .loading-container:-webkit-full-screen {
+            width: 100vw; height: 100vh; max-height: none; min-height: 100vh; margin: 0; background: #000;
+        }
+        .loading-container:fullscreen .loading-video,
+        .loading-container:-webkit-full-screen .loading-video { object-fit: contain; }
         .hidden { display: none !important; }
         .viewer-stage {
             width: 100%; position: relative; overflow: hidden;
@@ -132,7 +146,10 @@
             if (hasLoadingMedia) {
                 html += '<div id="loadingContainer" class="loading-container">';
                 if (hasVideo) {
-                    html += '<video id="loadingVideo" class="loading-video" autoplay muted playsinline><source src="' + p.loading_video + '" type="video/mp4"></video>';
+                    html += '<video id="loadingVideo" class="loading-video" autoplay muted playsinline' +
+                        (p.loading_use_video_audio ? ' data-use-video-audio="1"' : '') +
+                        '><source src="' + p.loading_video + '" type="video/mp4"></video>';
+                    html += '<button type="button" id="loadingFullscreenBtn" class="loading-fullscreen-btn" title="სრული ეკრანი" aria-label="სრული ეკრანი"><i class="bi bi-arrows-fullscreen"></i></button>';
                 }
                 if (hasAudio) {
                     html += '<audio id="loadingAudio" autoplay muted preload="auto"><source src="' + p.loading_audio + '" type="audio/mpeg"></audio>';
@@ -222,27 +239,40 @@
 
         var loadingAudio = document.getElementById('loadingAudio');
         var loadingVideo = document.getElementById('loadingVideo');
+        var useVideoAudio = !!(loadingVideo && loadingVideo.getAttribute('data-use-video-audio') === '1');
         var MAX_WAIT_MS = 120000;
         var mediaStopTimeout = null;
         var mediaAlreadyStopped = false;
-        var audioUnmuted = false;
+        var soundUnmuted = false;
+
+        function tryUnmuteMedia(el) {
+            if (!el) return Promise.resolve(false);
+            el.volume = 1;
+            el.muted = false;
+            return el.play().then(function() {
+                return true;
+            }).catch(function() {
+                el.muted = true;
+                return el.play().then(function() {
+                    el.muted = false;
+                    return el.play();
+                }).then(function() {
+                    return true;
+                }).catch(function() {
+                    el.muted = true;
+                    return false;
+                });
+            });
+        }
 
         function tryStartAudio() {
-            if (!loadingAudio || mediaAlreadyStopped || audioUnmuted) return;
-            loadingAudio.volume = 1;
-            loadingAudio.muted = false;
-            loadingAudio.play().then(function() {
-                audioUnmuted = true;
-            }).catch(function() {
-                loadingAudio.muted = true;
-                loadingAudio.play().then(function() {
-                    loadingAudio.muted = false;
-                    return loadingAudio.play();
-                }).then(function() {
-                    audioUnmuted = true;
-                }).catch(function() {
-                    loadingAudio.muted = true;
-                });
+            if (mediaAlreadyStopped || soundUnmuted) return;
+            var tasks = [];
+            if (loadingAudio) tasks.push(tryUnmuteMedia(loadingAudio));
+            if (useVideoAudio && loadingVideo) tasks.push(tryUnmuteMedia(loadingVideo));
+            if (!tasks.length) return;
+            Promise.all(tasks).then(function(results) {
+                if (results.some(Boolean)) soundUnmuted = true;
             });
         }
 
@@ -259,6 +289,10 @@
             if (mediaStopTimeout) {
                 clearTimeout(mediaStopTimeout);
                 mediaStopTimeout = null;
+            }
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                var exit = document.exitFullscreen || document.webkitExitFullscreen;
+                if (exit) exit.call(document);
             }
             if (loadingAudio) {
                 loadingAudio.pause();
@@ -278,7 +312,54 @@
         loadingContainer.style.cursor = 'pointer';
         loadingContainer.title = '3D მოდელის ნახვისთვის დააჭირეთ';
 
-        loadingContainer.addEventListener('click', function() {
+        function isLoadingFullscreen() {
+            var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+            return fsEl === loadingContainer;
+        }
+
+        function updateFullscreenBtn() {
+            var btn = document.getElementById('loadingFullscreenBtn');
+            if (!btn) return;
+            var icon = btn.querySelector('i');
+            if (!icon) return;
+            if (isLoadingFullscreen()) {
+                icon.className = 'bi bi-fullscreen-exit';
+                btn.title = 'სრული ეკრანიდან გასვლა';
+                btn.setAttribute('aria-label', 'სრული ეკრანიდან გასვლა');
+            } else {
+                icon.className = 'bi bi-arrows-fullscreen';
+                btn.title = 'სრული ეკრანი';
+                btn.setAttribute('aria-label', 'სრული ეკრანი');
+            }
+        }
+
+        function toggleLoadingFullscreen(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            tryStartAudio();
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                var req = loadingContainer.requestFullscreen || loadingContainer.webkitRequestFullscreen;
+                if (req) {
+                    Promise.resolve(req.call(loadingContainer)).catch(function() {});
+                }
+            } else {
+                var exitFs = document.exitFullscreen || document.webkitExitFullscreen;
+                if (exitFs) exitFs.call(document);
+            }
+            setTimeout(updateFullscreenBtn, 100);
+        }
+
+        var fullscreenBtn = document.getElementById('loadingFullscreenBtn');
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', toggleLoadingFullscreen);
+        }
+        document.addEventListener('fullscreenchange', updateFullscreenBtn);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenBtn);
+
+        loadingContainer.addEventListener('click', function(e) {
+            if (e.target.closest && e.target.closest('#loadingFullscreenBtn')) return;
             tryStartAudio();
             setTimeout(showViewer, 100);
         });
@@ -293,10 +374,14 @@
         }
         if (loadingVideo) {
             loadingVideo.addEventListener('playing', tryStartAudio);
+            if (useVideoAudio) {
+                loadingVideo.addEventListener('canplay', tryStartAudio);
+                loadingVideo.addEventListener('loadeddata', tryStartAudio);
+            }
         }
         window.addEventListener('pageshow', function() {
             if (!mediaAlreadyStopped) {
-                audioUnmuted = false;
+                soundUnmuted = false;
                 scheduleAudioRetries();
             }
         });

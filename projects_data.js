@@ -1,5 +1,57 @@
 var projectsData = [
   {
+    "id": "project_1784129339",
+    "title": "შატილი",
+    "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/21%20Shatili/Emily-Lush-Shatili-Khevsureti-drone-tower-village-HERO.jpg",
+    "main_image_caption": null,
+    "other_images": [
+      {
+        "url": "https://pub-e596682234f34e708445409c12658970.r2.dev/21%20Shatili/Shatili_fortress%2C_Georgia.jpg",
+        "caption": ""
+      },
+      {
+        "url": "https://pub-e596682234f34e708445409c12658970.r2.dev/21%20Shatili/Emily-Lush-Shatili-Khevsureti-drone-village-birdseye.jpg",
+        "caption": ""
+      }
+    ],
+    "model_urls": [],
+    "viewer3D": "<iframe id=\"viewer\" width=\"800\" height=\"500\" allow=\"fullscreen; xr-spatial-tracking\" src=\"https://superspl.at/s?id=606e61b2\"></iframe>",
+    "description": "შატილი — ქართული სამშენებლო ხელოვნების ერთ-ერთი უნიკალური ძეგლია. კლდეზე შეფენილი სოფელი ერთდროულად საცხოვრებელიც იყო და ციხესიმაგრეც. იგი საუკუნეთა მანძილზე დარაჯობდა საქართველოს ჩრდილოეთ გადმოსასვლელებს (ამჟამად აღდგენილია).\r\n\r\nსოფლის კიდეებს მიუყვება ერთმანეთთან მიჯნით ნაგები ციხე-სახლების რიგი და იქმნება ერთიანი, მიუვალი დამცველი კედელი, რომელიც საიმედოდ კეტავს სოფელს. გარე სამყაროსთან შატილს არღუნის ხეობაში გამავალი ერთადერთი ვიწრო გზა აკავშირებს. შატილის განაშენიანება ტერასულია, შენობათა ძირითადი ტიპია ბრტყელსახურავიანი სახლი და კოშკური საცხოვრებელი. სოფელს შენობებს შორის მთელ სიმაღლეზე აუდის ვიწრო ქვის კიბე, აქა-იქ შემორჩენილია ძვლებისაგან შეკრული ფიცარნაგები — გადასასვლელები, რომელთა მეშვეობით მტრის შემოსევის შემთხვევაში შესაძლებელი იყო მთელი სოფლის შემორბენა ქუჩაში გამოუსვლელად.\r\n\r\n1970-იანი წლებში დაიწყო შატილის რესტავრაცია-ადაპტაცია (არქიტექტორები თ. აბრამიშვილი, ნ. მინდორაძე, ი. შარაშენიძე).\r\n\r\n2007 წლის 24 ოქტომბრიდან შატილი შეტანილია იუნესკოს მსოფლიო მემკვიდრეობის საცდელ სიაში.",
+    "description_file": "description.txt",
+    "folder": "project_1784129339",
+    "latitude": "42.65914682293321",
+    "longitude": "45.15774060428868",
+    "sort_order": 1,
+    "documents": [],
+    "loading_video": "https://pub-e596682234f34e708445409c12658970.r2.dev/21%20Shatili/Shatili.mp4",
+    "loading_audio": "<iframe id=\"viewer\" width=\"800\" height=\"500\" allow=\"fullscreen; xr-spatial-tracking\" src=\"https://superspl.at/s?id=606e61b2\"></iframe>",
+    "loading_use_video_audio": true,
+    "project_info": {
+      "სტატუსი": "კულტურული მემკვიდრეობის ძეგლი",
+      "აშენების წელი": "VII - XIII საუკუნეებს შორის"
+    },
+    "type_categories": [
+      "ციხე"
+    ],
+    "period_categories": [
+      "I-X საუკუნე",
+      "XI-XVII საუკუნე"
+    ],
+    "visibility": "public",
+    "title_en": "Shatil",
+    "title_ru": "Шатиль",
+    "description_en": "Shatili is one of the unique monuments of Georgian construction art. The village spread over the rock was both a residence and a fortress at the same time. It guarded the northern crossings of Georgia for centuries (now it has been restored).\r\n\r\nThe edges of the village are surrounded by a row of fortress-houses built next to each other, forming a single, impenetrable defensive wall that reliably closes the village. Shatil is connected to the outside world by the only narrow road passing through the Arghun valley. The development of Shatil is terraced, the main types of buildings are flat-roofed houses and tower houses. A narrow stone staircase goes up the whole height between the buildings of the village, here and there\r\n\r\nThere are still planks made of bones - passages through which, in case of an enemy invasion, it was possible to run around the entire village without going out into the street.\r\n\r\nIn the 1970s, the restoration-adaptation of Shatili began (architects T. Abramishvili, N. Mindoradze, I. Sharashenidze).\r\n\r\nSince October 24, 2007, Shatil has been included in the UNESCO World Heritage Tentative List.",
+    "description_ru": "Шатили – один из уникальных памятников грузинского строительного искусства. Деревня, раскинувшаяся на скале, была одновременно и резиденцией, и крепостью. Он веками охранял северные переправы Грузии (сейчас восстановлен).\r\n\r\nКрая села окружены рядом построенных рядом домов-крепостей, образующих единую непробиваемую оборонительную стену, надежно замыкающую село. Шатиль связан с внешним миром единственной узкой дорогой, проходящей через Аргунскую долину. Застройка Шатиля террасная, основными типами застройки являются дома с плоской крышей и дома-башни. Узкая каменная лестница поднимается на всю высоту между постройками деревни, местами.\r\n\r\nДо сих пор сохранились доски из костей - ходы, по которым в случае вторжения противника можно было пробежаться по всему селу, не выходя на улицу.\r\n\r\nВ 1970-е годы началась реставрация-адаптация Шатили (архитекторы Т. Абрамишвили, Н. Миндорадзе, И. Шарашенидзе).\r\n\r\nС 24 октября 2007 года Шатиль включён в Предварительный список Всемирного наследия ЮНЕСКО.",
+    "project_info_en": {
+      "Status": "A monument of cultural heritage",
+      "Year of construction": "Between VII - XIII centuries"
+    },
+    "project_info_ru": {
+      "Статус": "Памятник культурного наследия",
+      "Год постройки": "Между VII – XIII веками"
+    }
+  },
+  {
     "id": "project_1767121167",
     "title": "მოწამეთას მონასტერი",
     "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/9)%20motsameta/4)%20photos/mowameta.jpg",
@@ -21,10 +73,11 @@ var projectsData = [
     "folder": "project_1767121167",
     "latitude": "42.28246338007734",
     "longitude": "42.75906963900661",
-    "sort_order": 0,
+    "sort_order": 2,
     "documents": [],
     "loading_video": "https://pub-e596682234f34e708445409c12658970.r2.dev/9)%20motsameta/5)%20video/mowameta_entrance.mp4",
     "loading_audio": "https://pub-e596682234f34e708445409c12658970.r2.dev/9)%20motsameta/6)%20music/%E1%83%9B%E1%83%9D%E1%83%AC%E1%83%90%E1%83%9B%E1%83%94%E1%83%97%E1%83%90_%E1%83%91%E1%83%90%E1%83%96%E1%83%90%E1%83%A0%E1%83%98.mpeg",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ეკლესია"
@@ -78,10 +131,11 @@ var projectsData = [
     "folder": "project_1767118442",
     "latitude": "41.9863249893096",
     "longitude": "44.10770030778663",
-    "sort_order": 1,
+    "sort_order": 3,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ციხე"
@@ -135,10 +189,11 @@ var projectsData = [
     "folder": "project_1767118816",
     "latitude": "42.27728298523646",
     "longitude": "42.70430534338346",
-    "sort_order": 2,
+    "sort_order": 4,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ეკლესია"
@@ -167,10 +222,11 @@ var projectsData = [
     "folder": "project_1767121612",
     "latitude": "41.69583405991376",
     "longitude": "44.78496021205808",
-    "sort_order": 3,
+    "sort_order": 5,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ძეგლი"
@@ -199,10 +255,11 @@ var projectsData = [
     "folder": "project_1767102672",
     "latitude": "41.77092041809446",
     "longitude": "44.81125899309245",
-    "sort_order": 4,
+    "sort_order": 6,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {
       "არქიტექტურა": "ტაძარი ჯვარ-გუმბათოვანია",
       "მისამართი": "ნუცუბიძის პლატო, III მკ/რ."
@@ -245,10 +302,11 @@ var projectsData = [
     "folder": "project_1767117563",
     "latitude": "41.76390721156297",
     "longitude": "44.76669880345213",
-    "sort_order": 5,
+    "sort_order": 7,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "მუზეუმი",
@@ -307,10 +365,11 @@ var projectsData = [
     "folder": "project_1767117958",
     "latitude": "41.68796404182556",
     "longitude": "44.80858363465157",
-    "sort_order": 6,
+    "sort_order": 8,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ეკლესია",
@@ -340,10 +399,11 @@ var projectsData = [
     "folder": "project_1767122592",
     "latitude": "42.2725088871505",
     "longitude": "42.70582611918681",
-    "sort_order": 9,
+    "sort_order": 11,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "მუზეუმი"
@@ -373,10 +433,11 @@ var projectsData = [
     "folder": "project_1767103340",
     "latitude": "41.706472556197404",
     "longitude": "44.751548578684634",
-    "sort_order": 10,
+    "sort_order": 12,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ძეგლი"
@@ -410,10 +471,11 @@ var projectsData = [
     "folder": "project_1780869629",
     "latitude": "41.39824375273177",
     "longitude": "43.79334911374934",
-    "sort_order": 12,
+    "sort_order": 14,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ეკლესია"
@@ -453,10 +515,11 @@ var projectsData = [
     "folder": "-",
     "latitude": "41.723851188331594",
     "longitude": "44.72893462004094",
-    "sort_order": 13,
+    "sort_order": 15,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ძეგლი"
@@ -485,10 +548,11 @@ var projectsData = [
     "folder": "project_1767122735",
     "latitude": "42.27519419013676",
     "longitude": "42.70600050662618",
-    "sort_order": 14,
+    "sort_order": 16,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ეკლესია"
@@ -546,10 +610,11 @@ var projectsData = [
     "folder": "project_1780868507",
     "latitude": "42.27728298523646",
     "longitude": "42.70430534338346",
-    "sort_order": 15,
+    "sort_order": 17,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ეკლესია"
@@ -591,10 +656,11 @@ var projectsData = [
     "folder": "project_1780868866",
     "latitude": "41.690306724148584",
     "longitude": "44.8054952769107",
-    "sort_order": 16,
+    "sort_order": 18,
     "documents": [],
     "loading_video": "https://pub-e596682234f34e708445409c12658970.r2.dev/14)%20dzveli%20tbilisi%20gamit/5)%20video/%E1%83%AB%E1%83%95%E1%83%94%E1%83%9A%E1%83%98%20%E1%83%97%E1%83%91%E1%83%98%E1%83%9A%E1%83%98%E1%83%A1%E1%83%98%E1%83%A1%20%E1%83%99%E1%83%90%E1%83%93%E1%83%A0%E1%83%94%E1%83%91%E1%83%98%20_%20Old%20Tbilisi.mp4",
     "loading_audio": "https://pub-e596682234f34e708445409c12658970.r2.dev/14)%20dzveli%20tbilisi%20gamit/6)%20music/dzveli%20tbilisi%20gogi%20cabadze.mp3",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [
       "ძეგლი"
@@ -636,10 +702,11 @@ var projectsData = [
     "folder": "project_1780869194",
     "latitude": "41.48094592236054",
     "longitude": "43.803740752460065",
-    "sort_order": 18,
+    "sort_order": 20,
     "documents": [],
     "loading_video": "",
     "loading_audio": "",
+    "loading_use_video_audio": false,
     "project_info": {},
     "type_categories": [],
     "period_categories": [],
