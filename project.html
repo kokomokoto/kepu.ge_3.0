@@ -126,9 +126,6 @@
     }
 
     function renderProject(p) {
-        if (p.viewer3D && p.viewer3D.charAt(0) !== '<') {
-            prefetchViewer(p.viewer3D);
-        }
         var html = '';
         var title = SiteI18n.localizedField(p, 'title');
         var desc = SiteI18n.localizedField(p, 'description') || '';
@@ -146,7 +143,7 @@
             if (hasLoadingMedia) {
                 html += '<div id="loadingContainer" class="loading-container">';
                 if (hasVideo) {
-                    html += '<video id="loadingVideo" class="loading-video" autoplay muted playsinline' +
+                    html += '<video id="loadingVideo" class="loading-video" autoplay muted playsinline preload="auto"' +
                         (p.loading_use_video_audio ? ' data-use-video-audio="1"' : '') +
                         '><source src="' + p.loading_video + '" type="video/mp4"></video>';
                     html += '<button type="button" id="loadingFullscreenBtn" class="loading-fullscreen-btn" title="სრული ეკრანი" aria-label="სრული ეკრანი"><i class="bi bi-arrows-fullscreen"></i></button>';
@@ -157,11 +154,19 @@
                 html += '</div>';
             }
 
-            html += '<div id="viewer3D" class="viewer-stage' + (hasLoadingMedia ? ' hidden' : '') + '">';
-            if (p.viewer3D.charAt(0) === '<') {
+            html += '<div id="viewer3D" class="viewer-stage' + (hasLoadingMedia ? ' hidden' : '') + '"' +
+                (hasLoadingMedia ? ' data-viewer-deferred="1"' : '') + '>';
+            if (hasLoadingMedia) {
+                if (p.viewer3D.charAt(0) === '<') {
+                    // HTML embed injected later by initViewer after video is ready
+                } else {
+                    html += '<iframe id="viewer3dFrame" data-src="' + p.viewer3D + '" class="viewer-iframe" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="xr-spatial-tracking; gyroscope; accelerometer"></iframe>';
+                }
+            } else if (p.viewer3D.charAt(0) === '<') {
                 html += p.viewer3D;
             } else {
                 html += '<iframe src="' + p.viewer3D + '" class="viewer-iframe" allowfullscreen webkitallowfullscreen mozallowfullscreen allow="xr-spatial-tracking; gyroscope; accelerometer"></iframe>';
+                prefetchViewer(p.viewer3D);
             }
             html += '</div></div>';
         }
@@ -222,7 +227,7 @@
 
         // Initialize 3D viewer loading
         if (p.viewer3D) {
-            initViewer();
+            initViewer(p);
         }
 
         // Initialize map
@@ -231,7 +236,7 @@
         }
     }
 
-    function initViewer() {
+    function initViewer(projectData) {
         var loadingContainer = document.getElementById('loadingContainer');
         var viewer3D = document.getElementById('viewer3D');
         if (!viewer3D) return;
@@ -244,6 +249,8 @@
         var mediaStopTimeout = null;
         var mediaAlreadyStopped = false;
         var soundUnmuted = false;
+        var viewerLoadStarted = false;
+        var videoFullyReady = false;
 
         function tryUnmuteMedia(el) {
             if (!el) return Promise.resolve(false);
@@ -283,9 +290,59 @@
             });
         }
 
+        function startViewerLoad() {
+            if (viewerLoadStarted || !viewer3D) return;
+            viewerLoadStarted = true;
+            var frame = document.getElementById('viewer3dFrame');
+            if (frame && frame.getAttribute('data-src') && !frame.getAttribute('src')) {
+                frame.src = frame.getAttribute('data-src');
+                prefetchViewer(frame.getAttribute('data-src'));
+            }
+            if (projectData && projectData.viewer3D && projectData.viewer3D.charAt(0) === '<' && !viewer3D.querySelector('.viewer-embed-ready')) {
+                var wrap = document.createElement('div');
+                wrap.className = 'viewer-embed-ready';
+                wrap.style.width = '100%';
+                wrap.style.height = '100%';
+                wrap.innerHTML = projectData.viewer3D;
+                viewer3D.appendChild(wrap);
+            }
+        }
+
+        function isVideoFullyBuffered(video) {
+            if (!video) return false;
+            var duration = video.duration;
+            if (!duration || !isFinite(duration) || duration <= 0) return false;
+            if (!video.buffered || video.buffered.length === 0) return false;
+            for (var i = 0; i < video.buffered.length; i++) {
+                var start = video.buffered.start(i);
+                var end = video.buffered.end(i);
+                if (start <= 0.35 && end >= (duration - 0.5)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function onVideoFullyReady() {
+            if (videoFullyReady) return;
+            videoFullyReady = true;
+            if (loadingVideo) {
+                loadingVideo.loop = !loadingAudio;
+            }
+            if (!mediaAlreadyStopped) startViewerLoad();
+        }
+
+        function checkVideoBuffer() {
+            if (videoFullyReady || mediaAlreadyStopped || !loadingVideo) return;
+            if (isVideoFullyBuffered(loadingVideo)) {
+                onVideoFullyReady();
+            }
+        }
+
         function showViewer() {
             if (mediaAlreadyStopped) return;
             mediaAlreadyStopped = true;
+            startViewerLoad();
             if (mediaStopTimeout) {
                 clearTimeout(mediaStopTimeout);
                 mediaStopTimeout = null;
@@ -361,6 +418,7 @@
         loadingContainer.addEventListener('click', function(e) {
             if (e.target.closest && e.target.closest('#loadingFullscreenBtn')) return;
             tryStartAudio();
+            startViewerLoad();
             setTimeout(showViewer, 100);
         });
 
@@ -378,6 +436,12 @@
                 loadingVideo.addEventListener('canplay', tryStartAudio);
                 loadingVideo.addEventListener('loadeddata', tryStartAudio);
             }
+            loadingVideo.addEventListener('progress', checkVideoBuffer);
+            loadingVideo.addEventListener('loadeddata', checkVideoBuffer);
+            loadingVideo.addEventListener('timeupdate', checkVideoBuffer);
+            checkVideoBuffer();
+        } else {
+            setTimeout(startViewerLoad, 800);
         }
         window.addEventListener('pageshow', function() {
             if (!mediaAlreadyStopped) {
@@ -395,8 +459,15 @@
                 if (loadingAudio && !loadingAudio.ended) {
                     loadingVideo.currentTime = 0;
                     loadingVideo.play().catch(function() {});
-                } else if (!loadingAudio) {
+                    return;
+                }
+                // Reaching the end once usually means the file is fully buffered
+                onVideoFullyReady();
+                if (viewerLoadStarted) {
                     showViewer();
+                } else {
+                    loadingVideo.currentTime = 0;
+                    loadingVideo.play().catch(function() {});
                 }
             });
         }
