@@ -398,19 +398,25 @@
             }
         }
 
+        function exitAnyNativeFullscreen() {
+            if (loadingVideo && loadingVideo.webkitDisplayingFullscreen
+                && typeof loadingVideo.webkitExitFullscreen === 'function') {
+                try { loadingVideo.webkitExitFullscreen(); } catch (err) {}
+            }
+            var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+            if (!fsEl) return Promise.resolve();
+            var exitFs = document.exitFullscreen || document.webkitExitFullscreen;
+            if (!exitFs) return Promise.resolve();
+            return Promise.resolve(exitFs.call(document)).catch(function() {});
+        }
+
         function applyViewerCssFullscreen() {
             if (!viewer3D) return;
-            var exit = document.exitFullscreen || document.webkitExitFullscreen;
-            var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-            if (exit && fsEl && fsEl !== viewer3D) {
-                Promise.resolve(exit.call(document)).finally(function() {
-                    viewer3D.classList.add('viewer-fs-active');
-                    updateViewerFullscreenBtn();
-                });
-                return;
-            }
-            viewer3D.classList.add('viewer-fs-active');
-            updateViewerFullscreenBtn();
+            exitAnyNativeFullscreen().finally(function() {
+                if (!viewer3D) return;
+                viewer3D.classList.add('viewer-fs-active');
+                updateViewerFullscreenBtn();
+            });
         }
 
         function isViewerFullscreen() {
@@ -429,28 +435,14 @@
         function exitViewerFullscreen() {
             if (!viewer3D) return;
             viewer3D.classList.remove('viewer-fs-active');
-            var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-            if (fsEl === viewer3D) {
-                var exitFs = document.exitFullscreen || document.webkitExitFullscreen;
-                if (exitFs) {
-                    Promise.resolve(exitFs.call(document)).catch(function() {});
-                }
-            }
+            exitAnyNativeFullscreen().finally(function() {
+                updateViewerFullscreenBtn();
+            });
             updateViewerFullscreenBtn();
         }
 
         function enterViewerFullscreen() {
             if (!viewer3D) return;
-            var req = viewer3D.requestFullscreen || viewer3D.webkitRequestFullscreen;
-            if (req) {
-                Promise.resolve(req.call(viewer3D)).then(function() {
-                    viewer3D.classList.remove('viewer-fs-active');
-                    updateViewerFullscreenBtn();
-                }).catch(function() {
-                    applyViewerCssFullscreen();
-                });
-                return;
-            }
             applyViewerCssFullscreen();
         }
 
@@ -466,20 +458,7 @@
                 ? isLoadingFullscreen()
                 : !!(loadingContainer && loadingContainer.classList.contains('loading-fs-active'));
 
-            if (loadingVideo && loadingVideo.webkitDisplayingFullscreen
-                && typeof loadingVideo.webkitExitFullscreen === 'function') {
-                try { loadingVideo.webkitExitFullscreen(); } catch (err) {}
-            }
-
-            if (!keepViewerFullscreen) {
-                if (document.fullscreenElement || document.webkitFullscreenElement) {
-                    var exit = document.exitFullscreen || document.webkitExitFullscreen;
-                    if (exit) exit.call(document);
-                }
-                loadingContainer.classList.remove('loading-fs-active');
-            } else {
-                loadingContainer.classList.remove('loading-fs-active');
-            }
+            loadingContainer.classList.remove('loading-fs-active');
 
             if (loadingAudio) {
                 loadingAudio.pause();
@@ -498,6 +477,8 @@
                 enterViewerFullscreen();
                 setTimeout(updateViewerFullscreenBtn, 50);
                 setTimeout(updateViewerFullscreenBtn, 300);
+            } else {
+                exitAnyNativeFullscreen();
             }
         }
 
