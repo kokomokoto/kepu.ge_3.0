@@ -3,7 +3,7 @@ var projectsData = [
     "id": "project_1784129339",
     "title": "შატილი",
     "main_image": "https://pub-e596682234f34e708445409c12658970.r2.dev/21%20Shatili/Emily-Lush-Shatili-Khevsureti-drone-tower-village-HERO.jpg",
-    "main_image_caption": "None",
+    "main_image_caption": null,
     "other_images": [
       {
         "url": "https://pub-e596682234f34e708445409c12658970.r2.dev/21%20Shatili/Shatili_fortress%2C_Georgia.jpg",
@@ -24,7 +24,7 @@ var projectsData = [
     "sort_order": 1,
     "documents": [],
     "loading_video": "https://pub-e596682234f34e708445409c12658970.r2.dev/21%20Shatili/Shatili1.mp4",
-    "loading_audio": null,
+    "loading_audio": "None",
     "loading_use_video_audio": true,
     "project_info": {
       "სტატუსი": "კულტურული მემკვიდრეობის ძეგლი",
