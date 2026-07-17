@@ -192,13 +192,13 @@
             if (hasLoadingMedia) {
                 html += '<div id="loadingContainer" class="loading-container">';
                 if (hasVideo) {
-                    html += '<video id="loadingVideo" class="loading-video" autoplay muted playsinline preload="auto"' +
+                    html += '<video id="loadingVideo" class="loading-video" playsinline preload="auto"' +
                         (p.loading_use_video_audio ? ' data-use-video-audio="1"' : '') +
                         '><source src="' + p.loading_video + '" type="video/mp4"></video>';
                     html += '<button type="button" id="loadingFullscreenBtn" class="loading-fullscreen-btn" title="სრული ეკრანი" aria-label="სრული ეკრანი"><i class="bi bi-arrows-fullscreen"></i></button>';
                 }
                 if (hasAudio) {
-                    html += '<audio id="loadingAudio" autoplay muted preload="auto"><source src="' + p.loading_audio + '" type="audio/mpeg"></audio>';
+                    html += '<audio id="loadingAudio" preload="auto"><source src="' + p.loading_audio + '" type="audio/mpeg"></audio>';
                 }
                 html += '</div>';
             }
@@ -330,42 +330,300 @@
         var viewerLoadStarted = false;
         var videoFullyReady = false;
         var viewerWantsFullscreen = false;
+        var userHasGestured = false;
+        var autoUnmuteAttempts = 0;
+        var AUTO_UNMUTE_MAX = 6;
+        var mediaBootStarted = false;
+        var mediaBootAt = 0;
+        var mediaBootPlaySettled = false;
+        var softReloadInProgress = false;
+
+        function ensurePlayingMuted(el) {
+            if (!el || mediaAlreadyStopped) return Promise.resolve(false);
+            if (!el.paused && !el.ended) return Promise.resolve(true);
+            if (!el.muted) el.muted = true;
+            return el.play().then(function() {
+                return true;
+            }).catch(function() {
+                return false;
+            });
+        }
 
         function tryUnmuteMedia(el) {
-            if (!el) return Promise.resolve(false);
+            if (!el || mediaAlreadyStopped) return Promise.resolve(false);
             el.volume = 1;
+            if (!el.muted && !el.paused) return Promise.resolve(true);
+
+            if (!el.paused) {
+                el.muted = false;
+                return new Promise(function(resolve) {
+                    setTimeout(function() {
+                        if (!el.muted && !el.paused) {
+                            resolve(true);
+                            return;
+                        }
+                        el.muted = true;
+                        if (el.paused) {
+                            el.play().then(function() { resolve(false); }).catch(function() { resolve(false); });
+                        } else {
+                            resolve(false);
+                        }
+                    }, 80);
+                });
+            }
+
             el.muted = false;
             return el.play().then(function() {
                 return true;
             }).catch(function() {
                 el.muted = true;
                 return el.play().then(function() {
-                    el.muted = false;
-                    return el.play();
-                }).then(function() {
-                    return true;
+                    return false;
                 }).catch(function() {
-                    el.muted = true;
                     return false;
                 });
             });
         }
 
-        function tryStartAudio() {
+        function tryStartAudio(fromGesture) {
             if (mediaAlreadyStopped || soundUnmuted) return;
+            if (!fromGesture && !mediaBootPlaySettled) return;
+
+            if (!fromGesture) {
+                if (autoUnmuteAttempts >= AUTO_UNMUTE_MAX) return;
+                var readyEl = (useVideoAudio && loadingVideo) ? loadingVideo : loadingAudio;
+                if (readyEl && readyEl.readyState < 2) return;
+                autoUnmuteAttempts += 1;
+            }
+
             var tasks = [];
             if (loadingAudio) tasks.push(tryUnmuteMedia(loadingAudio));
             if (useVideoAudio && loadingVideo) tasks.push(tryUnmuteMedia(loadingVideo));
-            if (!tasks.length) return;
+            if (!tasks.length) {
+                if (loadingVideo && loadingVideo.paused) ensurePlayingMuted(loadingVideo);
+                return;
+            }
             Promise.all(tasks).then(function(results) {
-                if (results.some(Boolean)) soundUnmuted = true;
+                if (results.some(Boolean)) {
+                    soundUnmuted = true;
+                    try { sessionStorage.setItem('kepu_audio_ok', '1'); } catch (err) {}
+                }
             });
         }
 
+        function noteUserGesture() {
+            userHasGestured = true;
+            tryStartAudio(true);
+        }
+
+        function markBootPlaySettled() {
+            mediaBootPlaySettled = true;
+        }
+
+        function sessionAudioOk() {
+            try { return sessionStorage.getItem('kepu_audio_ok') === '1'; } catch (err) { return false; }
+        }
+
+        function bootLoadingMedia(fromGesture, preferKeepSound) {
+            if (mediaBootStarted || mediaAlreadyStopped) return;
+            mediaBootStarted = true;
+            mediaBootAt = Date.now();
+            mediaBootPlaySettled = false;
+            if (fromGesture) userHasGestured = true;
+            var keepSound = !!(preferKeepSound || fromGesture || sessionAudioOk());
+
+            function afterMutedPlaying() {
+                markBootPlaySettled();
+                tryStartAudio(!!fromGesture || keepSound);
+                [200, 600, 1200, 2500].forEach(function(ms) {
+                    setTimeout(function() {
+                        if (!soundUnmuted) tryStartAudio(!!fromGesture || keepSound);
+                    }, ms);
+                });
+            }
+
+            function playUnmuted(el, onSuccess) {
+                if (!el) return;
+                el.volume = 1;
+                el.muted = false;
+                el.play().then(function() {
+                    markBootPlaySettled();
+                    if (onSuccess) onSuccess();
+                }).catch(function() {
+                    if (keepSound) {
+                        // Never lock into muted after the site already had sound / gesture.
+                        el.muted = false;
+                        el.play().then(function() {
+                            markBootPlaySettled();
+                            if (onSuccess) onSuccess();
+                        }).catch(afterMutedPlaying);
+                        return;
+                    }
+                    el.muted = true;
+                    el.play().then(afterMutedPlaying).catch(afterMutedPlaying);
+                });
+            }
+
+            if (loadingVideo) {
+                if (useVideoAudio || !loadingAudio) {
+                    playUnmuted(loadingVideo, function() {
+                        if (useVideoAudio) {
+                            soundUnmuted = true;
+                            try { sessionStorage.setItem('kepu_audio_ok', '1'); } catch (err) {}
+                        }
+                        if (loadingAudio) tryStartAudio(!!fromGesture || keepSound);
+                    });
+                } else {
+                    loadingVideo.volume = 1;
+                    loadingVideo.muted = true;
+                    loadingVideo.play().then(afterMutedPlaying).catch(afterMutedPlaying);
+                }
+            }
+
+            if (loadingAudio) {
+                playUnmuted(loadingAudio, function() {
+                    soundUnmuted = true;
+                    try { sessionStorage.setItem('kepu_audio_ok', '1'); } catch (err) {}
+                });
+            }
+
+            if (!loadingVideo && !loadingAudio) markBootPlaySettled();
+        }
+
+        function tearDownViewerForSoftReload() {
+            viewerLoadStarted = false;
+            videoFullyReady = false;
+            viewerWantsFullscreen = false;
+            var frame = document.getElementById('viewer3dFrame');
+            if (frame) {
+                try { frame.removeAttribute('src'); } catch (err) {}
+            }
+            var ready = viewer3D.querySelector('.viewer-embed-ready');
+            if (ready) ready.remove();
+            viewer3D.classList.remove('viewer-fs-active');
+            document.documentElement.classList.remove('viewer-fs-lock');
+            document.body.classList.remove('viewer-fs-lock');
+            mountViewerExitControl(false);
+            viewer3D.classList.add('hidden');
+            viewer3D.style.display = 'none';
+        }
+
+        // Same as opening / F5: restart loading with sound.
+        // If sound was already playing, seek-to-start without pause (keeps unlock).
+        function softReloadLikeFirstOpen(fromGesture) {
+            if (softReloadInProgress) return;
+            softReloadInProgress = true;
+            try {
+                if (mediaStopTimeout) {
+                    clearTimeout(mediaStopTimeout);
+                    mediaStopTimeout = null;
+                }
+                exitAnyNativeFullscreen();
+                tearDownViewerForSoftReload();
+
+                var hadSound = !!(soundUnmuted || sessionAudioOk()
+                    || (loadingVideo && !loadingVideo.muted && !loadingVideo.paused)
+                    || (loadingAudio && !loadingAudio.muted && !loadingAudio.paused));
+                var activationLive = !!(navigator.userActivation && navigator.userActivation.isActive);
+                var withGesture = !!(fromGesture || activationLive);
+
+                mediaAlreadyStopped = false;
+                autoUnmuteAttempts = 0;
+                mediaBootStarted = false;
+                mediaBootAt = 0;
+                mediaBootPlaySettled = false;
+                userHasGestured = withGesture;
+                // Keep soundUnmuted true when restarting already-audible media
+                if (!hadSound) soundUnmuted = false;
+
+                loadingContainer.classList.remove('hidden', 'loading-fs-active');
+                loadingContainer.style.display = '';
+
+                function restartEl(el) {
+                    if (!el) return false;
+                    el.loop = (el === loadingVideo) ? false : el.loop;
+                    el.volume = 1;
+                    el.muted = false;
+                    // Already playing unmuted → only seek (do not pause/play; that drops unlock)
+                    if (hadSound && !el.paused) {
+                        try { el.currentTime = 0; } catch (err) {}
+                        return true;
+                    }
+                    try { el.pause(); } catch (err2) {}
+                    try { el.currentTime = 0; } catch (err3) {}
+                    return false;
+                }
+
+                var videoKept = restartEl(loadingVideo);
+                var audioKept = restartEl(loadingAudio);
+                if ((videoKept && useVideoAudio) || audioKept) {
+                    soundUnmuted = true;
+                    try { sessionStorage.setItem('kepu_audio_ok', '1'); } catch (err) {}
+                    mediaBootStarted = true;
+                    mediaBootAt = Date.now();
+                    mediaBootPlaySettled = true;
+                } else {
+                    bootLoadingMedia(withGesture, hadSound);
+                    if (withGesture) tryStartAudio(true);
+                }
+                checkVideoBuffer();
+            } finally {
+                setTimeout(function() { softReloadInProgress = false; }, 200);
+            }
+        }
+
         function scheduleAudioRetries() {
-            tryStartAudio();
-            [250, 500, 1000, 2000].forEach(function(ms) {
-                setTimeout(tryStartAudio, ms);
+            bootLoadingMedia(false, sessionAudioOk());
+        }
+
+        function isReloadKey(e) {
+            if (e.key === 'F5') return true;
+            if ((e.key === 'r' || e.key === 'R') && (e.ctrlKey || e.metaKey) && !e.altKey) return true;
+            return false;
+        }
+
+        var allowHardReload = false;
+
+        // F5 / Ctrl+R: soft-reload with key gesture (sound stays on).
+        // Ctrl+Shift+R stays a real hard reload (bypass cache).
+        window.addEventListener('keydown', function(e) {
+            if (!isReloadKey(e)) return;
+            if (e.shiftKey) {
+                allowHardReload = true;
+                return;
+            }
+            e.preventDefault();
+            softReloadLikeFirstOpen(true);
+        }, true);
+
+        // Toolbar reload (circular arrow): same soft-reload as F5, sync in this listener.
+        if (typeof window.navigation !== 'undefined' && navigation.addEventListener) {
+            navigation.addEventListener('navigate', function(e) {
+                if (e.navigationType !== 'reload') return;
+                if (!e.canIntercept) return;
+                if (allowHardReload) {
+                    allowHardReload = false;
+                    return;
+                }
+                try {
+                    e.intercept({
+                        focusReset: 'manual',
+                        scroll: 'manual',
+                        handler: function() { return Promise.resolve(); }
+                    });
+                } catch (err) {
+                    return;
+                }
+                // Sync unmuted play while the navigate event is still dispatching
+                if (loadingVideo && (useVideoAudio || !loadingAudio)) {
+                    loadingVideo.muted = false;
+                    loadingVideo.play().catch(function() {});
+                }
+                if (loadingAudio) {
+                    loadingAudio.muted = false;
+                    loadingAudio.play().catch(function() {});
+                }
+                softReloadLikeFirstOpen(true);
             });
         }
 
@@ -408,7 +666,26 @@
             if (loadingVideo) {
                 loadingVideo.loop = !loadingAudio;
             }
-            if (!mediaAlreadyStopped) startViewerLoad();
+            if (!mediaAlreadyStopped) scheduleViewerLoadDeferred();
+        }
+
+        function scheduleViewerLoadDeferred() {
+            if (mediaAlreadyStopped || viewerLoadStarted) return;
+            function maybeLoad() {
+                if (mediaAlreadyStopped || viewerLoadStarted) return;
+                if (!loadingVideo) {
+                    startViewerLoad();
+                    return;
+                }
+                var t = loadingVideo.currentTime || 0;
+                var d = loadingVideo.duration || 0;
+                if (t >= 2.5 || (d > 0 && t >= Math.max(1, d - 10))) {
+                    startViewerLoad();
+                    return;
+                }
+                setTimeout(maybeLoad, 400);
+            }
+            maybeLoad();
         }
 
         function checkVideoBuffer() {
@@ -616,7 +893,7 @@
             if (loadingContainer._fsToggleLock) return;
             loadingContainer._fsToggleLock = true;
             setTimeout(function() { loadingContainer._fsToggleLock = false; }, 450);
-            tryStartAudio();
+            noteUserGesture();
             if (isLoadingFullscreen()) {
                 exitLoadingFullscreen();
             } else {
@@ -700,39 +977,48 @@
 
         loadingContainer.addEventListener('click', function(e) {
             if (e.target.closest && e.target.closest('#loadingFullscreenBtn')) return;
-            tryStartAudio();
+            noteUserGesture();
             startViewerLoad();
             showViewer();
         });
 
-        document.addEventListener('click', tryStartAudio);
+        document.addEventListener('click', noteUserGesture);
         document.addEventListener('touchstart', function(e) {
             if (document.body.classList.contains('glightbox-open')) return;
-            tryStartAudio();
+            noteUserGesture();
         }, { passive: true });
-        document.addEventListener('keydown', tryStartAudio);
+        document.addEventListener('keydown', noteUserGesture);
 
         if (loadingAudio) {
-            loadingAudio.addEventListener('canplay', tryStartAudio);
-            loadingAudio.addEventListener('loadeddata', tryStartAudio);
+            loadingAudio.addEventListener('canplay', function() { tryStartAudio(false); });
+            loadingAudio.addEventListener('loadeddata', function() { tryStartAudio(false); });
         }
         if (loadingVideo) {
-            loadingVideo.addEventListener('playing', tryStartAudio);
-            if (useVideoAudio) {
-                loadingVideo.addEventListener('canplay', tryStartAudio);
-                loadingVideo.addEventListener('loadeddata', tryStartAudio);
+            loadingVideo.addEventListener('pause', function() {
+                if (mediaAlreadyStopped || soundUnmuted) return;
+                if (mediaBootAt && (Date.now() - mediaBootAt) < 3000) return;
+                setTimeout(function() {
+                    if (mediaAlreadyStopped || soundUnmuted || !loadingVideo.paused) return;
+                    ensurePlayingMuted(loadingVideo);
+                }, 60);
+            });
+            if (useVideoAudio || loadingAudio) {
+                loadingVideo.addEventListener('canplay', function() { tryStartAudio(false); });
+                loadingVideo.addEventListener('loadeddata', function() { tryStartAudio(false); });
             }
             loadingVideo.addEventListener('progress', checkVideoBuffer);
             loadingVideo.addEventListener('loadeddata', checkVideoBuffer);
             loadingVideo.addEventListener('timeupdate', checkVideoBuffer);
             checkVideoBuffer();
+            loadingVideo.addEventListener('playing', function() {
+                if (!soundUnmuted) tryStartAudio(false);
+            });
         } else {
             setTimeout(startViewerLoad, 800);
         }
-        window.addEventListener('pageshow', function() {
-            if (!mediaAlreadyStopped) {
-                soundUnmuted = false;
-                scheduleAudioRetries();
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) {
+                softReloadLikeFirstOpen(false);
             }
         });
 
